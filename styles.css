@@ -9,11 +9,15 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
     color: #2d3748;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-    background-size: 400% 400%;
-    animation: gradientShift 15s ease infinite;
+    background: 
+        radial-gradient(ellipse at top, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom, rgba(118, 75, 162, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, #f8fafc 0%, #e2e8f0 25%, #cbd5e0 50%, #a0aec0 75%, #718096 100%);
+    background-size: 100% 100%, 100% 100%, 400% 400%;
+    animation: gradientShift 20s ease infinite;
     min-height: 100vh;
     position: relative;
+    overflow-x: hidden;
 }
 
 body::before {
@@ -24,11 +28,13 @@ body::before {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+        radial-gradient(circle at 15% 15%, rgba(102, 126, 234, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(118, 75, 162, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 50% 20%, rgba(240, 147, 251, 0.1) 0%, transparent 35%),
+        radial-gradient(circle at 20% 80%, rgba(120, 219, 255, 0.1) 0%, transparent 35%);
     pointer-events: none;
-    z-index: -1;
+    z-index: -2;
+    animation: float 25s ease-in-out infinite;
 }
 
 body::after {
@@ -39,35 +45,49 @@ body::after {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 25%),
-        radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 0%, transparent 25%),
-        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08) 0%, transparent 30%),
+        radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.06) 0%, transparent 30%),
+        radial-gradient(circle at 10% 90%, rgba(255, 255, 255, 0.04) 0%, transparent 25%),
+        radial-gradient(circle at 90% 10%, rgba(255, 255, 255, 0.04) 0%, transparent 25%);
     pointer-events: none;
     z-index: -1;
-    animation: float 20s ease-in-out infinite;
+    animation: float 30s ease-in-out infinite reverse;
 }
 
 @keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-20px) rotate(180deg); }
+    0%, 100% { 
+        transform: translateY(0px) rotate(0deg) scale(1); 
+    }
+    33% { 
+        transform: translateY(-15px) rotate(120deg) scale(1.05); 
+    }
+    66% { 
+        transform: translateY(10px) rotate(240deg) scale(0.95); 
+    }
 }
 
 .container {
-    max-width: 900px;
+    max-width: 920px;
     margin: 0 auto;
-    padding: 3rem 2rem;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    padding: 3.5rem 2.5rem;
+    background: 
+        linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%),
+        radial-gradient(circle at 20% 20%, rgba(102, 126, 234, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.05) 0%, transparent 50%);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
     min-height: 100vh;
     box-shadow: 
-        0 25px 50px rgba(0, 0, 0, 0.15),
-        0 0 0 1px rgba(255, 255, 255, 0.2);
-    border-radius: 24px;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+        0 32px 64px rgba(0, 0, 0, 0.12),
+        0 16px 32px rgba(0, 0, 0, 0.08),
+        0 0 0 1px rgba(255, 255, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    border-radius: 32px;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
     position: relative;
     overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .container::before {
@@ -76,10 +96,30 @@ body::after {
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #667eea);
-    background-size: 200% 100%;
-    animation: gradientShift 3s ease-in-out infinite;
+    height: 6px;
+    background: linear-gradient(90deg, 
+        #667eea 0%, 
+        #764ba2 25%, 
+        #f093fb 50%, 
+        #667eea 75%, 
+        #764ba2 100%);
+    background-size: 300% 100%;
+    animation: gradientShift 4s ease-in-out infinite;
+    border-radius: 32px 32px 0 0;
+}
+
+.container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 10% 10%, rgba(102, 126, 234, 0.03) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(118, 75, 162, 0.03) 0%, transparent 40%);
+    pointer-events: none;
+    border-radius: 32px;
 }
 
 /* Header styles */
@@ -123,21 +163,30 @@ body::after {
     animation: fadeInUp 0.8s ease-out 0.2s both;
 }
 
-.location {
+.location-badge {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 0.5rem;
-    margin-bottom: 1.4rem;
     color: #718096;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 500;
-    animation: fadeInUp 0.8s ease-out 0.3s both;
+    padding: 0.6rem 1.2rem;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.location-badge:hover {
+    border-color: rgba(102, 126, 234, 0.4);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .location-icon {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     color: #667eea;
 }
 
@@ -283,7 +332,7 @@ p {
 .experience-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 1.2rem;
     flex-wrap: wrap;
     gap: 0.8rem;
@@ -296,9 +345,10 @@ p {
 
 .experience-meta {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem;
     flex-wrap: wrap;
+    margin-top: 0.2rem;
 }
 
 .job-title {
@@ -316,15 +366,6 @@ p {
     font-size: 1rem;
 }
 
-.location {
-    color: #718096;
-    font-size: 0.85rem;
-    font-weight: 500;
-    margin-bottom: 0;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-}
 
 .dates {
     color: #667eea;
@@ -568,28 +609,34 @@ footer::before {
 
 /* Responsive design */
 @media (max-width: 768px) {
-    body {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .container {
+        padding: 2.5rem 2rem;
+        margin: 1rem;
+        border-radius: 24px;
+        max-width: calc(100% - 2rem);
     }
     
-    .container {
-        padding: 2rem 1.5rem;
-        margin: 1rem;
-        border-radius: 16px;
+    .container::before {
+        height: 4px;
+        border-radius: 24px 24px 0 0;
+    }
+    
+    .container::after {
+        border-radius: 24px;
     }
     
     .name {
         font-size: 2.2rem;
     }
     
-    .location {
-        font-size: 0.9rem;
-        margin-bottom: 1.2rem;
+    .location-badge {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
     }
     
     .location-icon {
-        width: 16px;
-        height: 16px;
+        width: 14px;
+        height: 14px;
     }
     
     .contact {
@@ -641,6 +688,7 @@ footer::before {
         align-items: flex-start;
         width: 100%;
         gap: 0.8rem;
+        margin-top: 0;
     }
     
     .job-title {
@@ -655,7 +703,18 @@ footer::before {
 @media (max-width: 480px) {
     .container {
         margin: 0.5rem;
-        padding: 1.5rem 1rem;
+        padding: 2rem 1.5rem;
+        border-radius: 20px;
+        max-width: calc(100% - 1rem);
+    }
+    
+    .container::before {
+        height: 3px;
+        border-radius: 20px 20px 0 0;
+    }
+    
+    .container::after {
+        border-radius: 20px;
     }
     
     .name {
@@ -666,14 +725,14 @@ footer::before {
         font-size: 1.1rem;
     }
     
-    .location {
-        font-size: 0.85rem;
-        margin-bottom: 1rem;
+    .location-badge {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
     }
     
     .location-icon {
-        width: 14px;
-        height: 14px;
+        width: 12px;
+        height: 12px;
     }
     
     .contact-icon {
