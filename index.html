@@ -1,172 +1,407 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aadhil - Portfolio</title>
+    <title>Mohammed Aadhil - Portfolio</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="background-grid"></div>
+
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+
     <div class="container">
-        <header class="hero">
-            <h1 class="name">Aadhil</h1>
-            <p class="title">Software Developer</p>
-            <div class="contact">
-                <a href="mailto:aadhilrf@outlook.com" class="contact-link">
-                    <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                        <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
-                    <span>Email</span>
-                </a>
-                <a href="https://www.linkedin.com/in/aadhilkh" target="_blank" class="contact-link">
-                    <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                        <rect x="2" y="9" width="4" height="12"></rect>
-                        <circle cx="4" cy="4" r="2"></circle>
-                    </svg>
-                    <span>LinkedIn</span>
-                </a>
-                <div class="location-badge">
-                    <svg class="location-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
-                    <span>Chennai, India</span>
+        <!-- ===== PROFILE ===== -->
+        <header class="hero terminal-card" id="profile">
+            <div class="terminal-header">
+                <div class="window-controls">
+                    <span class="dot red macos-ctrl"></span>
+                    <span class="dot yellow macos-ctrl"></span>
+                    <span class="dot green macos-ctrl"></span>
+                    <span class="win-btn win-min windows-ctrl">&#8211;</span>
+                    <span class="win-btn win-max windows-ctrl">&#9633;</span>
+                    <span class="win-btn win-close windows-ctrl">&#x2715;</span>
+                </div>
+                <span class="terminal-section-label">Profile</span>
+                <span class="terminal-path">~/portfolio/profile.sh</span>
+            </div>
+            <div class="terminal-body">
+                <h1 class="name">Mohammed Aadhil</h1>
+                <p class="title"><span id="typed-text"></span><span class="cursor"></span></p>
+                <div class="contact">
+                    <a href="mailto:aadhilrf@outlook.com" class="contact-link" title="Email">
+                        <svg class="contact-icon icon-email" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="4" width="20" height="16" rx="2"/>
+                            <path d="m2 7 10 7 10-7"/>
+                        </svg>
+                        <span>aadhilrf@outlook.com</span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/aadhilkh" target="_blank" rel="noopener" class="contact-link" title="LinkedIn">
+                        <svg class="contact-icon icon-linkedin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                            <rect x="2" y="9" width="4" height="12"/>
+                            <circle cx="4" cy="4" r="2"/>
+                        </svg>
+                        <span>aadhilkh</span>
+                    </a>
+                    <a href="https://github.com/aadhil-kh" target="_blank" rel="noopener" class="contact-link" title="GitHub">
+                        <svg class="contact-icon icon-github" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                        </svg>
+                        <span>aadhil-kh</span>
+                    </a>
+                    <div class="location-badge contact-link" title="Location">
+                        <svg class="contact-icon icon-location" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        <span>Chennai, India</span>
+                    </div>
                 </div>
             </div>
         </header>
 
         <main>
-            <section class="about">
-                <h2>About</h2>
-                <p>Passionate software developer with 7+ years of professional experience building scalable applications and solving complex technical challenges. I specialize in full-stack development with a focus on creating efficient, user-centric solutions.</p>
-                <p>Currently working as a Member of Technical Staff at Zoho Corporation, where I enhance developer experiences and integrate CRM systems with first-party services.</p>
-                <p>When I'm not coding, I love exploring new technologies, contributing to open-source projects, and mentoring fellow developers. I believe in writing clean, maintainable code and following best practices to deliver exceptional software solutions.</p>
-            </section>
-
-            <section class="skills">
-                <div class="skills-header">
-                    <h2>Technical Expertise</h2>
-                    <!-- <p class="skills-subtitle">Technologies & Tools I Work With</p> -->
+            <!-- ===== ABOUT ===== -->
+            <section class="about terminal-card" id="about">
+                <div class="terminal-header">
+                    <div class="window-controls">
+                        <span class="dot red macos-ctrl"></span>
+                        <span class="dot yellow macos-ctrl"></span>
+                        <span class="dot green macos-ctrl"></span>
+                        <span class="win-btn win-min windows-ctrl">&#8211;</span>
+                        <span class="win-btn win-max windows-ctrl">&#9633;</span>
+                        <span class="win-btn win-close windows-ctrl">&#x2715;</span>
+                    </div>
+                    <span class="terminal-section-label">About</span>
+                    <span class="terminal-path">~/portfolio/summary.txt</span>
                 </div>
-                <div class="skills-container">
-                    <div class="skill-category">
-                        <h3>Programming Languages</h3>
-                        <div class="skill-group">
-                            <span class="skill primary">JavaScript</span>
-                            <span class="skill primary">TypeScript</span>
-                            <span class="skill primary">Python</span>
-                        </div>
-                    </div>
-                    <div class="skill-category">
-                        <h3>Backend & Databases</h3>
-                        <div class="skill-group">
-                            <span class="skill secondary">Node.js</span>
-                            <span class="skill secondary">PostgreSQL</span>
-                            <span class="skill secondary">REST</span>
-                        </div>
-                    </div>
-                    <div class="skill-category">
-                        <h3>Cloud & Tools</h3>
-                        <div class="skill-group">
-                            <span class="skill tertiary">AWS</span>
-                            <span class="skill tertiary">Git</span>
-                            <span class="skill tertiary">LLM RAG</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <section class="experience">
-                <h2>Experience</h2>
-                <div class="experience-item">
-                    <div class="experience-header">
-                        <div class="experience-title-section">
-                            <h3 class="job-title">Member Of Technical Staff</h3>
-                            <p class="company">Zoho Corporation · Full-time · Chennai, India</p>
-                        </div>
-                        <div class="experience-meta">
-                            <span class="dates">Jul 2019 - Present · 6 yrs 3 mos</span>
-                        </div>
-                    </div>
-                    <ul>
-                        <li>Part of a team to improve the Developer Experience of CRM</li>
-                        <li>Helped maintain and improve Integration of CRM with other first party services</li>
-                    </ul>
-                </div>
-                <div class="experience-item">
-                    <div class="experience-header">
-                        <div class="experience-title-section">
-                            <h3 class="job-title">Systems Engineer</h3>
-                            <p class="company">Tata Consultancy Services · Full-time · Chennai, India</p>
-                        </div>
-                        <div class="experience-meta">
-                            <span class="dates">Jun 2018 - Jul 2019 · 1 yr 2 mos</span>
-                        </div>
-                    </div>
-                    <ul>
-                        <li>Successfully implemented Real-time processing of products in SAP Hybris for PIM solution using Apache Kafka, Apache NiFi and Confluent</li>
-                        <li>Helped enhance and customise the SAP Hybris for PIM solution</li>
-                    </ul>
-                </div>
-                <div class="experience-item">
-                    <div class="experience-header">
-                        <div class="experience-title-section">
-                            <h3 class="job-title">Freelance Software Developer</h3>
-                            <p class="company">Freelance Software Development · Self-employed · Chennai, India</p>
-                        </div>
-                        <div class="experience-meta">
-                            <span class="dates">Jun 2017 - May 2018 · 1 yr</span>
-                        </div>
-                    </div>
-                    <ul>
-                        <li>Developed highly scalable SAAS application using NodeJS (express), Angular, PostgreSQL, Redis, Socket IO, BullMQ, AWS S3, AWS SNS, AWS SES, FCM, RazorPay</li>
-                        <li>Developed Pharmacy Billing system for a client using Winforms with support for invoice, inventory management, vendor management, report generation</li>
-                        <li>Developed University management system with support for student's attendance, time table management, staff management using PHP, Bootstrap, JQuery</li>
-                        <li>Developed simple front end apps using Windows 10 UWP, GTK3 PyQT</li>
-                        <li>Developed automation scripts using python and bash</li>
-                    </ul>
-                </div>
-                <div class="experience-item">
-                    <div class="experience-header">
-                        <div class="experience-title-section">
-                            <h3 class="job-title">Full Stack Developer</h3>
-                            <p class="company">ifelse Technologies · Internship · Chennai, India</p>
-                        </div>
-                        <div class="experience-meta">
-                            <span class="dates">Jun 2017 - Jun 2017 · 1 mo</span>
-                        </div>
-                    </div>
-                    <ul>
-                        <li>Successfully developed Facebook Messenger Bot for Reservation Management using Facebook Bot and Graph API</li>
-                    </ul>
+                <div class="terminal-body">
+                    <p>Passionate <strong>full-stack developer</strong> and FOSS enthusiast with over 7 years of professional experience architecting scalable solutions that bridge code and user needs.</p>
+                    <br>
+                    <p>Currently at <strong>Zoho CRM</strong>, I lead Developer Experience initiatives, crafting Client Scripts, Widgets SDKs, and intuitive Developer Tools that empower thousands of builders to extend and customize Zoho CRM.</p>
+                    <br>
+                    <p>My professional journey kicked off at <strong>Tata Consultancy Services</strong>, where I transformed batch-processed product data integrations into real-time streams using Apache Kafka, NiFi, and Confluent within SAP Hybris PIM.</p>
                 </div>
             </section>
 
-            
+            <!-- ===== SKILLS ===== -->
+            <section class="skills terminal-card" id="skills">
+                <div class="terminal-header">
+                    <div class="window-controls">
+                        <span class="dot red macos-ctrl"></span>
+                        <span class="dot yellow macos-ctrl"></span>
+                        <span class="dot green macos-ctrl"></span>
+                        <span class="win-btn win-min windows-ctrl">&#8211;</span>
+                        <span class="win-btn win-max windows-ctrl">&#9633;</span>
+                        <span class="win-btn win-close windows-ctrl">&#x2715;</span>
+                    </div>
+                    <span class="terminal-section-label">Skills</span>
+                    <span class="terminal-path">~/portfolio/skills.json</span>
+                </div>
+                <div class="terminal-body">
+                    <div class="skill-group">
+                        <span class="skill-group-label">// languages</span>
+                        <div class="skill-pills">
+                            <span class="skill-pill keyword">JavaScript</span>
+                            <span class="skill-pill keyword">TypeScript</span>
+                            <span class="skill-pill keyword">Java</span>
+                            <span class="skill-pill keyword">Python</span>
+                        </div>
+                    </div>
+                    <div class="skill-group">
+                        <span class="skill-group-label">// backend &amp; databases</span>
+                        <div class="skill-pills">
+                            <span class="skill-pill variable">Node.js</span>
+                            <span class="skill-pill variable">PostgreSQL</span>
+                            <span class="skill-pill variable">Redis</span>
+                            <span class="skill-pill variable">REST APIs</span>
+                        </div>
+                    </div>
+                    <div class="skill-group">
+                        <span class="skill-group-label">// infra &amp; tools</span>
+                        <div class="skill-pills">
+                            <span class="skill-pill string">Apache Kafka</span>
+                            <span class="skill-pill string">BullMQ</span>
+                            <span class="skill-pill string">AWS</span>
+                            <span class="skill-pill string">Git</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-            <!-- <section class="projects">
-                <h2>Projects</h2>
-                <div class="project-item">
-                    <h3>E-commerce Platform</h3>
-                    <p>Full-stack web application built with React, Node.js, and MongoDB. Features include user authentication, product catalog, shopping cart, and payment integration.</p>
+            <!-- ===== EXPERIENCE ===== -->
+            <section class="experience terminal-card" id="experience">
+                <div class="terminal-header">
+                    <div class="window-controls">
+                        <span class="dot red macos-ctrl"></span>
+                        <span class="dot yellow macos-ctrl"></span>
+                        <span class="dot green macos-ctrl"></span>
+                        <span class="win-btn win-min windows-ctrl">&#8211;</span>
+                        <span class="win-btn win-max windows-ctrl">&#9633;</span>
+                        <span class="win-btn win-close windows-ctrl">&#x2715;</span>
+                    </div>
+                    <span class="terminal-section-label">Experience</span>
+                    <span class="terminal-path">~/portfolio/history.log</span>
                 </div>
-                <div class="project-item">
-                    <h3>Task Management App</h3>
-                    <p>Collaborative project management tool with real-time updates, team collaboration features, and progress tracking capabilities.</p>
+                <div class="terminal-body">
+                    <!-- Zoho MLS -->
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="exp-left">
+                                <div class="company-logo zoho-logo" title="Zoho Corporation">
+                                    <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="40" height="40" rx="8" fill="currentColor" fill-opacity="0.12"/>
+                                        <text x="20" y="25" text-anchor="middle" font-family="Fira Code, monospace" font-weight="700" font-size="18" fill="currentColor">Z</text>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="job-title"><span class="syntax-function">Member Leadership Staff</span></h3>
+                                    <p class="company-name">Zoho Corporation &middot; Chennai, India</p>
+                                </div>
+                            </div>
+                            <span class="dates">Mar 2026 &ndash; Present</span>
+                        </div>
+                    </div>
+                    <!-- Zoho MTS -->
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="exp-left">
+                                <div class="company-logo zoho-logo" title="Zoho Corporation">
+                                    <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="40" height="40" rx="8" fill="currentColor" fill-opacity="0.12"/>
+                                        <text x="20" y="25" text-anchor="middle" font-family="Fira Code, monospace" font-weight="700" font-size="18" fill="currentColor">Z</text>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="job-title"><span class="syntax-function">Member Technical Staff</span></h3>
+                                    <p class="company-name">Zoho Corporation &middot; Chennai, India</p>
+                                </div>
+                            </div>
+                            <span class="dates">Jul 2019 &ndash; Mar 2026</span>
+                        </div>
+                        <ul class="exp-list">
+                            <li>Lead Developer Experience initiatives, crafting Client Scripts, Widgets SDKs, and intuitive Developer Tools.</li>
+                            <li>Empowered thousands of builders to extend and customize Zoho CRM.</li>
+                        </ul>
+                    </div>
+                    <!-- TCS -->
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="exp-left">
+                                <div class="company-logo tcs-logo" title="Tata Consultancy Services">
+                                    <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="40" height="40" rx="8" fill="currentColor" fill-opacity="0.12"/>
+                                        <text x="20" y="25" text-anchor="middle" font-family="Fira Code, monospace" font-weight="700" font-size="12" fill="currentColor">TCS</text>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="job-title"><span class="syntax-function">Systems Engineer</span></h3>
+                                    <p class="company-name">Tata Consultancy Services &middot; Chennai, India</p>
+                                </div>
+                            </div>
+                            <span class="dates">Jun 2018 &ndash; Jul 2019</span>
+                        </div>
+                        <ul class="exp-list">
+                            <li>Migrated product data integration pipeline from batch to real-time using Apache Kafka, NiFi, and Confluent.</li>
+                            <li>Extended and customized SAP Hybris core functionalities to support dynamic product requirements.</li>
+                        </ul>
+                    </div>
+                    <!-- Freelance -->
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="exp-left">
+                                <div class="company-logo freelance-logo" title="Self-employed">
+                                    <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="40" height="40" rx="8" fill="currentColor" fill-opacity="0.12"/>
+                                        <text x="20" y="26" text-anchor="middle" font-family="Fira Code, monospace" font-weight="700" font-size="11" fill="currentColor">&lt;/&gt;</text>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="job-title"><span class="syntax-function">Freelance Software Developer</span></h3>
+                                    <p class="company-name">Self-employed &middot; Chennai, India</p>
+                                </div>
+                            </div>
+                            <span class="dates">Jun 2016 &ndash; Jun 2018</span>
+                        </div>
+                        <ul class="exp-list">
+                            <li>Architected high-scale SaaS platform using Node.js (Express), Angular, PostgreSQL, Redis, Socket.IO, and BullMQ.</li>
+                            <li>Engineered a custom Pharmacy Management System using WinForms with invoicing and inventory management.</li>
+                            <li>Built a University Management portal using PHP, Bootstrap, and jQuery for attendance and timetable management.</li>
+                        </ul>
+                    </div>
+                    <!-- ifelse -->
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="exp-left">
+                                <div class="company-logo intern-logo" title="ifelse Techsmart">
+                                    <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="40" height="40" rx="8" fill="currentColor" fill-opacity="0.12"/>
+                                        <text x="20" y="26" text-anchor="middle" font-family="Fira Code, monospace" font-weight="700" font-size="10" fill="currentColor">if{}</text>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="job-title"><span class="syntax-function">Full Stack Developer</span></h3>
+                                    <p class="company-name">ifelse Techsmart Solutions &middot; Chennai, India</p>
+                                </div>
+                            </div>
+                            <span class="dates">Jun 2017 &ndash; Jun 2017</span>
+                        </div>
+                        <ul class="exp-list">
+                            <li>Developed a Facebook Messenger Bot for streamlined reservation management using the Messenger Platform and Graph API.</li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="project-item">
-                    <h3>Portfolio Website</h3>
-                    <p>Minimal, responsive portfolio built with HTML, CSS, and modern web standards. Features clean design and mobile-first approach.</p>
+            </section>
+
+            <!-- ===== EDUCATION ===== -->
+            <section class="education terminal-card" id="education">
+                <div class="terminal-header">
+                    <div class="window-controls">
+                        <span class="dot red macos-ctrl"></span>
+                        <span class="dot yellow macos-ctrl"></span>
+                        <span class="dot green macos-ctrl"></span>
+                        <span class="win-btn win-min windows-ctrl">&#8211;</span>
+                        <span class="win-btn win-max windows-ctrl">&#9633;</span>
+                        <span class="win-btn win-close windows-ctrl">&#x2715;</span>
+                    </div>
+                    <span class="terminal-section-label">Education</span>
+                    <span class="terminal-path">~/portfolio/education.md</span>
                 </div>
-            </section> -->
+                <div class="terminal-body">
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <div class="exp-left">
+                                <div class="company-logo edu-logo" title="AMSCE">
+                                    <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="40" height="40" rx="8" fill="currentColor" fill-opacity="0.12"/>
+                                        <path d="M20 11 L30 16 L20 21 L10 16 Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+                                        <path d="M14 18.5 L14 24 Q20 27 26 24 L26 18.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="job-title"><span class="syntax-function">B.E. Computer Science</span></h3>
+                                    <p class="company-name">Aalim Muhammed Salegh College of Engineering</p>
+                                </div>
+                            </div>
+                            <span class="dates">2014 &ndash; 2018</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
 
         <footer>
-            <p>&copy; 2025 Aadhil. All rights reserved.</p>
+            <p><span class="syntax-comment">// &copy; 2026 Mohammed Aadhil. All rights reserved.</span></p>
         </footer>
     </div>
+
+    <!-- ===== MOBILE NAV ===== -->
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Section navigation">
+        <a href="#profile" class="mobile-nav-item active" data-section="profile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            <span>Profile</span>
+        </a>
+        <a href="#about" class="mobile-nav-item" data-section="about">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="0.5" fill="currentColor"/></svg>
+            <span>About</span>
+        </a>
+        <a href="#skills" class="mobile-nav-item" data-section="skills">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <span>Skills</span>
+        </a>
+        <a href="#experience" class="mobile-nav-item" data-section="experience">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+            <span>Work</span>
+        </a>
+        <a href="#education" class="mobile-nav-item" data-section="education">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            <span>Edu</span>
+        </a>
+    </nav>
+
+    <script>
+        // --- OS Detection ---
+        const isWindows = /Win/i.test(navigator.platform) || /Windows/i.test(navigator.userAgent);
+        if (isWindows) document.body.classList.add('os-windows');
+
+        // --- Theme ---
+        const root = document.documentElement;
+        const toggleBtn = document.getElementById('theme-toggle');
+
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        const savedTheme = localStorage.getItem('theme') || systemTheme;
+        root.setAttribute('data-theme', savedTheme);
+
+        toggleBtn.addEventListener('click', () => {
+            const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            root.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+
+        // --- Typing Animation ---
+        const roles = [
+            'DevEx Engineer @ Zoho CRM',
+            'Full-Stack Developer',
+            'FOSS Enthusiast',
+            'Builder of Developer Tools',
+        ];
+        let roleIdx = 0, charIdx = 0, deleting = false;
+        const typedEl = document.getElementById('typed-text');
+
+        function type() {
+            const current = roles[roleIdx];
+            if (!deleting) {
+                typedEl.textContent = current.slice(0, ++charIdx);
+                if (charIdx === current.length) {
+                    deleting = true;
+                    setTimeout(type, 2200);
+                    return;
+                }
+            } else {
+                typedEl.textContent = current.slice(0, --charIdx);
+                if (charIdx === 0) {
+                    deleting = false;
+                    roleIdx = (roleIdx + 1) % roles.length;
+                }
+            }
+            setTimeout(type, deleting ? 38 : 72);
+        }
+        type();
+
+        // --- Mobile nav active state via IntersectionObserver ---
+        const navItems = document.querySelectorAll('.mobile-nav-item');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navItems.forEach(i => i.classList.remove('active'));
+                    const active = document.querySelector(`.mobile-nav-item[data-section="${entry.target.id}"]`);
+                    if (active) active.classList.add('active');
+                }
+            });
+        }, { threshold: 0.4 });
+
+        ['profile', 'about', 'skills', 'experience', 'education'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) observer.observe(el);
+        });
+    </script>
 </body>
 </html>
