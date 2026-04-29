@@ -183,6 +183,31 @@ h1, h3,
 .win-btn.win-max:hover   { background: var(--card-border); }
 .win-btn.win-min:hover   { background: var(--card-border); }
 
+/* Linux OS (GNOME/Adwaita) class overrides — same colored dots, symbols appear on hover */
+.os-linux .dot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+    position: relative;
+}
+.os-linux .dot::after {
+    content: '';
+    position: absolute;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 7px;
+    font-weight: 900;
+    line-height: 1;
+    color: transparent;
+    transition: color 0.12s ease;
+    pointer-events: none;
+    user-select: none;
+}
+.os-linux .dot.red::after    { content: '\00D7'; } /* × */
+.os-linux .dot.yellow::after { content: '\2212'; } /* − */
+.os-linux .dot.green::after  { content: '\229F'; } /* ⊟ */
+.os-linux .window-controls:hover .dot::after { color: rgba(0, 0, 0, 0.55); }
+
 /* Windows OS class overrides */
 .os-windows .macos-ctrl   { display: none !important; }
 .os-windows .windows-ctrl { display: flex !important; }
@@ -215,6 +240,30 @@ h1, h3,
 .syntax-property { color: var(--syntax-variable); }
 .syntax-function { color: var(--syntax-function); }
 .syntax-comment  { color: var(--syntax-comment); }
+
+/* ===== Profile Avatar ===== */
+.hero-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+}
+.hero-text {
+    flex: 1;
+    min-width: 0;
+}
+.profile-avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid var(--card-border);
+    box-shadow: 0 2px 12px var(--shadow);
+    transition: border-color 0.2s ease;
+}
+.profile-avatar:hover {
+    border-color: var(--accent);
+}
 
 /* ===== Profile Header ===== */
 .name {
@@ -280,7 +329,10 @@ h1, h3,
 }
 
 /* Icon accent colors — subtle, theme-aware */
-.icon-email    { color: #4fc1ff; }   /* sky blue */
+.icon-x       { color: var(--text-primary); opacity: 0.75; }
+[data-theme="light"] .icon-x { color: #0f172a; }
+
+
 .icon-linkedin { color: #60a5fa; }   /* softer LinkedIn blue */
 .icon-github   { color: #a78bfa; }   /* purple */
 .icon-location { color: #34d399; }   /* teal green */
@@ -402,9 +454,58 @@ h1, h3,
 
 /* ===== Footer ===== */
 footer {
-    text-align: center;
     padding: 1.5rem 0 0.5rem;
     font-size: 0.82rem;
+}
+.footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.footer-copy {
+    color: var(--text-muted);
+}
+.footer-socials {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.footer-social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+.footer-social-link:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 15%, transparent);
+}
+.social-icon-img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    display: block;
+    /* Default (light mode): icons keep their brand colors */
+    filter: opacity(0.75);
+}
+/* Dark mode: invert black SVG fills to white */
+[data-theme="dark"] .social-icon-img {
+    filter: invert(1) opacity(0.75);
+}
+.footer-social-link:hover .social-icon-img {
+    filter: opacity(1);
+}
+[data-theme="dark"] .footer-social-link:hover .social-icon-img {
+    filter: invert(1) opacity(1);
 }
 
 /* ===== Mobile Nav ===== */
@@ -454,6 +555,8 @@ footer {
     .experience-header { flex-direction: column; gap: 0.35rem; }
     .dates { align-self: flex-end; }
     .exp-list { margin-left: calc(38px + 0.6rem); }
+    .profile-avatar { width: 85px; height: 85px; }
+    .footer-inner { justify-content: center; flex-direction: column; align-items: center; text-align: center; gap: 0.75rem; }
 }
 
 @media (max-width: 480px) {
@@ -464,4 +567,6 @@ footer {
     .exp-list { margin-left: calc(32px + 0.6rem); }
     .skill-pill { font-size: 0.74rem; padding: 0.17rem 0.5rem; }
     .terminal-body { padding: 1rem; }
+    .hero-content { flex-direction: column-reverse; align-items: center; }
+    .profile-avatar { width: 90px; height: 90px; }
 }

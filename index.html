@@ -43,21 +43,29 @@
                 <span class="terminal-path">~/portfolio/profile.sh</span>
             </div>
             <div class="terminal-body">
+                <div class="hero-content">
+                <div class="hero-text">
                 <h1 class="name">Mohammed Aadhil</h1>
                 <p class="title"><span id="typed-text"></span><span class="cursor"></span></p>
                 <div class="contact">
-                    <a href="mailto:aadhilrf@outlook.com" class="contact-link" title="Email">
+                    <a href="mailto:aadhilkh@outlook.com" class="contact-link" title="Email">
                         <svg class="contact-icon icon-email" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="2" y="4" width="20" height="16" rx="2"/>
                             <path d="m2 7 10 7 10-7"/>
                         </svg>
-                        <span>aadhilrf@outlook.com</span>
+                        <span>aadhilkh@outlook.com</span>
                     </a>
                     <a href="https://www.linkedin.com/in/aadhilkh" target="_blank" rel="noopener" class="contact-link" title="LinkedIn">
                         <svg class="contact-icon icon-linkedin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
                             <rect x="2" y="9" width="4" height="12"/>
                             <circle cx="4" cy="4" r="2"/>
+                        </svg>
+                        <span>aadhilkh</span>
+                    </a>
+                    <a href="https://x.com/aadhilkh" target="_blank" rel="noopener" class="contact-link" title="X / Twitter">
+                        <svg class="contact-icon icon-x" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                            <path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/>
                         </svg>
                         <span>aadhilkh</span>
                     </a>
@@ -75,6 +83,9 @@
                         <span>Chennai, India</span>
                     </div>
                 </div>
+                </div><!-- /.hero-text -->
+                <img src="media/images/mascot.jpg" alt="Mohammed Aadhil" class="profile-avatar">
+                </div><!-- /.hero-content -->
             </div>
         </header>
 
@@ -309,7 +320,20 @@
         </main>
 
         <footer>
-            <p><span class="syntax-comment">// &copy; 2026 Mohammed Aadhil. All rights reserved.</span></p>
+            <div class="footer-inner">
+                <p class="footer-copy"><span class="syntax-comment">// &copy; 2026 Mohammed Aadhil</span></p>
+                <div class="footer-socials">
+                    <a href="https://x.com/aadhilkh" target="_blank" rel="noopener" class="footer-social-link" title="X / Twitter" aria-label="X / Twitter">
+                        <img src="media/images/x-logo.svg" alt="X" class="social-icon-img">
+                    </a>
+                    <a href="https://www.linkedin.com/in/aadhilkh" target="_blank" rel="noopener" class="footer-social-link" title="LinkedIn" aria-label="LinkedIn">
+                        <img src="media/images/linkedin-logo.svg" alt="LinkedIn" class="social-icon-img">
+                    </a>
+                    <a href="https://github.com/aadhil-kh" target="_blank" rel="noopener" class="footer-social-link" title="GitHub" aria-label="GitHub">
+                        <img src="media/images/github-logo.svg" alt="GitHub" class="social-icon-img">
+                    </a>
+                </div>
+            </div>
         </footer>
     </div>
 
@@ -339,8 +363,18 @@
 
     <script>
         // --- OS Detection ---
-        const isWindows = /Win/i.test(navigator.platform) || /Windows/i.test(navigator.userAgent);
-        if (isWindows) document.body.classList.add('os-windows');
+        (function() {
+            const ua = navigator.userAgent;
+            const platform = (navigator.userAgentData && navigator.userAgentData.platform)
+                ? navigator.userAgentData.platform
+                : (navigator.platform || '');
+            const isWindows = /Win/i.test(platform) || /Windows/i.test(ua);
+            const isLinux   = (/Linux/i.test(platform) || /Linux/i.test(ua))
+                              && !/Android/i.test(ua)
+                              && !/Mobile/i.test(ua);
+            if (isWindows)      document.body.classList.add('os-windows');
+            else if (isLinux)   document.body.classList.add('os-linux');
+        })();
 
         // --- Theme ---
         const root = document.documentElement;
