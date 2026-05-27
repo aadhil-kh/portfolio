@@ -84,21 +84,6 @@
                     <span class="terminal-path">~/portfolio/apps.json</span>
                 </div>
                 <div class="terminal-body">
-                    <div class="apps-filter">
-                        <button class="filter-btn active" data-filter="all">all</button>
-                        <button class="filter-btn" data-filter="macos">
-                            <span>macOS</span>
-                        </button>
-                        <button class="filter-btn" data-filter="windows">
-                            <span>Windows</span>
-                        </button>
-                        <button class="filter-btn" data-filter="ipados">
-                            <span>iPadOS</span>
-                        </button>
-                        <button class="filter-btn" data-filter="ios">
-                            <span>iOS</span>
-                        </button>
-                    </div>
                     <div class="apps-list" id="apps-list"></div>
                 </div>
             </section>
@@ -523,26 +508,11 @@
             ipados:  `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>`,
             ios:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M9.5 2h5M12 19h.01"/></svg>`
         };
-
         const PLATFORM_LABELS = { macos: 'macOS', windows: 'Windows', ipados: 'iPadOS', ios: 'iOS' };
 
-        // Populate filter buttons with platform icons from PLATFORM_ICONS
-        ['macos', 'windows', 'ipados', 'ios'].forEach(platform => {
-            const btn = document.querySelector(`.filter-btn[data-filter="${platform}"]`);
-            if (btn) {
-                const span = btn.querySelector('span');
-                btn.insertAdjacentHTML('afterbegin', PLATFORM_ICONS[platform]);
-            }
-        });
-
-        function renderApps(filter) {
+        function renderApps() {
             const list = document.getElementById('apps-list');
-            const filtered = filter === 'all' ? APPS : APPS.filter(a => a.platforms.includes(filter));
-
-            if (filtered.length === 0) {
-                list.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;padding:0.5rem 0;">No apps available for this platform yet.</p>';
-                return;
-            }
+            const filtered = APPS;
 
             list.innerHTML = filtered.map(app => {
                 const iconHtml = app.icon
@@ -629,15 +599,8 @@
         }
 
 
-        renderApps('all');
+        renderApps();
 
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                renderApps(btn.dataset.filter);
-            });
-        });
 
         // --- Screenshot Carousel ---
         // To add screenshots to an app, add a `screenshots` array to its APPS entry:

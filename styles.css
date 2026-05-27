@@ -2,7 +2,7 @@
 :root {
     --bg: #1e1e1e;
     --card-bg: #252526;
-    --card-border: #3c3c3c;
+    --card-border: #555;
     --card-header-bg: #2d2d2d;
     --text-primary: #f8fafc;
     --text-secondary: #e2e8f0;
@@ -478,55 +478,6 @@ h1, h3,
 }
 
 /* ===== Apps / Portfolio ===== */
-.apps-filter {
-    display: inline-flex;
-    flex-wrap: wrap;
-    background: color-mix(in srgb, var(--text-muted) 12%, transparent);
-    padding: 0.25rem;
-    border-radius: 8px;
-    border: none;
-    gap: 0.2rem;
-    margin-bottom: 2.5rem;
-}
-.filter-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-family: 'Fira Code', monospace;
-    font-size: 0.76rem;
-    padding: 0.35rem 0.8rem;
-    border-radius: 6px;
-    border: none;
-    background: transparent;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.filter-btn svg {
-    width: 14px;
-    height: 14px;
-    stroke-width: 2;
-}
-.filter-btn:hover {
-    color: var(--text-primary);
-}
-.filter-btn.active {
-    color: var(--text-primary);
-    background: var(--card-bg);
-    box-shadow: 0 1px 3px var(--shadow), 0 1px 2px var(--shadow);
-}
-/* Brand colors for inactive filter icons */
-/* .filter-btn:not(.active)[data-filter="macos"] svg,
-.filter-btn:not(.active)[data-filter="ipados"] svg {
-    color: var(--text-primary);
-}
-.filter-btn:not(.active)[data-filter="windows"] svg {
-    color: #0078D4;
-}
-.filter-btn:not(.active)[data-filter="linux"] svg {
-    color: #FCC624;
-} */
-
 .apps-list {
     display: flex;
     flex-direction: column;
@@ -714,11 +665,11 @@ h1, h3,
     transform: translateY(-50%);
     height: 12px;
     width: 1px;
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.18);
 }
 
-.platform-tag:hover {
-    color: var(--accent);
+[data-theme="light"] .platform-tag:not(:last-child)::after {
+    background: rgba(0, 0, 0, 0.15);
 }
 
 .platform-tag svg {
@@ -730,10 +681,6 @@ h1, h3,
     transition: opacity 0.2s ease;
 }
 
-.platform-tag:hover svg {
-    opacity: 1;
-}
-
 .platform-label {
     display: inline;
     font-weight: 500;
@@ -742,15 +689,17 @@ h1, h3,
 .app-screenshots-container {
     width: 100%;
     position: relative;
+    /* overflow: hidden; */
 }
 
 .app-screenshots {
     display: flex;
     gap: 0.75rem;
-    overflow-x: auto;
+    overflow-x: scroll;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-x;
+    overscroll-behavior-x: contain;
     scrollbar-width: none;
     padding: 0.25rem 0 0.5rem;
     margin: 0;
@@ -1045,14 +994,9 @@ h1, h3,
     }
 
     .app-screenshots {
-        /* Remove negative-margin bleed — it prevents touch scroll registration on iOS */
-        display: flex;
-        overflow-x: auto;
-        overflow-y: hidden;
-        -webkit-overflow-scrolling: touch;
-        touch-action: pan-x;
-        gap: 0.75rem;
-        width: 100%;
+        overflow-x: scroll;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: none;
         padding: 0.25rem 0 0.75rem;
     }
     
@@ -1084,35 +1028,13 @@ h1, h3,
     .app-title { font-size: 1.2rem; }
     .app-desc { font-size: 0.88rem; margin-bottom: 1rem; }
     .app-platforms { margin-bottom: 1.25rem; }
-    
+
     .platform-tag {
         padding: 0 0.6rem;
         font-size: 0.7rem;
     }
-    
-    .platform-tag:not(:last-child)::after {
-        display: none;
-    }
-    .platform-tag {
-        border: 1px solid var(--card-border);
-        border-radius: 4px;
-        margin-right: 0.4rem;
-        margin-bottom: 0.4rem;
-        padding: 0.2rem 0.5rem;
-        background: color-mix(in srgb, var(--card-border) 20%, transparent);
-    }
-    .platform-tag:first-child { padding-left: 0.5rem; }
-
-    .apps-filter {
-        display: flex;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        width: 100%;
-        margin-bottom: 1.25rem;
-        -webkit-overflow-scrolling: touch;
-    }
-    .apps-filter::-webkit-scrollbar { display: none; }
-    .filter-btn { flex-shrink: 0; }
+    .platform-tag:first-child { padding-left: 0; }
+    .platform-tag:not(:last-child)::after { display: block; }
 }
 
 /* ===== Footer ===== */
