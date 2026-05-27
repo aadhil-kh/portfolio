@@ -354,27 +354,29 @@
 
     <!-- ===== SCREENSHOT CAROUSEL ===== -->
     <div class="screenshot-overlay" id="screenshot-overlay" role="dialog" aria-modal="true" aria-label="Screenshot viewer" aria-hidden="true">
-        <button class="carousel-close" id="carousel-close" aria-label="Close screenshots">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-        </button>
-        <div class="carousel-stage">
-            <button class="carousel-nav carousel-prev" id="carousel-prev" aria-label="Previous screenshot">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>
-            <div class="carousel-img-wrap">
-                <img class="carousel-img" id="carousel-img" src="" alt="Screenshot">
-                <div class="carousel-meta">
-                    <span class="carousel-title" id="carousel-title"></span>
-                    <span class="carousel-counter" id="carousel-counter"></span>
-                </div>
+        <div class="carousel-modal" id="carousel-modal">
+            <div class="carousel-header">
+                <span class="carousel-counter" id="carousel-counter"></span>
+                <span class="carousel-title" id="carousel-title"></span>
+                <button class="carousel-close" id="carousel-close" aria-label="Close screenshots">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
             </div>
-            <button class="carousel-nav carousel-next" id="carousel-next" aria-label="Next screenshot">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
+            <div class="carousel-stage">
+                <button class="carousel-nav carousel-prev" id="carousel-prev" aria-label="Previous screenshot">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                </button>
+                <div class="carousel-img-wrap">
+                    <img class="carousel-img" id="carousel-img" src="" alt="Screenshot">
+                </div>
+                <button class="carousel-nav carousel-next" id="carousel-next" aria-label="Next screenshot">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+            </div>
+            <div class="carousel-thumbs" id="carousel-thumbs"></div>
         </div>
-        <div class="carousel-thumbs" id="carousel-thumbs"></div>
     </div>
 
     <script>
@@ -644,6 +646,7 @@
         let carouselIdx = 0;
 
         const overlay = document.getElementById('screenshot-overlay');
+        const carModal = document.getElementById('carousel-modal');
         const carImg = document.getElementById('carousel-img');
         const carTitle = document.getElementById('carousel-title');
         const carCounter = document.getElementById('carousel-counter');
@@ -700,7 +703,9 @@
         carClose.addEventListener('click', closeCarousel);
         carPrev.addEventListener('click', () => setCarouselIndex(carouselIdx - 1));
         carNext.addEventListener('click', () => setCarouselIndex(carouselIdx + 1));
-        overlay.addEventListener('click', e => { if (e.target === overlay) closeCarousel(); });
+        // Click on backdrop (outside modal) closes; modal itself stops propagation
+        overlay.addEventListener('click', closeCarousel);
+        carModal.addEventListener('click', e => e.stopPropagation());
 
         document.addEventListener('keydown', e => {
             if (!overlay.classList.contains('open')) return;
@@ -710,8 +715,8 @@
         });
 
         let touchStartX = 0;
-        overlay.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-        overlay.addEventListener('touchend', e => {
+        carModal.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+        carModal.addEventListener('touchend', e => {
             const dx = e.changedTouches[0].clientX - touchStartX;
             if (Math.abs(dx) > 40) dx < 0 ? setCarouselIndex(carouselIdx + 1) : setCarouselIndex(carouselIdx - 1);
         }, { passive: true });

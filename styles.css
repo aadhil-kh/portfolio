@@ -748,10 +748,14 @@ h1, h3,
     display: flex;
     gap: 0.75rem;
     overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
     scrollbar-width: none;
     padding: 0.25rem 0 0.5rem;
     margin: 0;
     scroll-snap-type: x proximity;
+    scroll-padding: 0 1rem;
 }
 
 .app-screenshots::-webkit-scrollbar { display: none; }
@@ -767,6 +771,8 @@ h1, h3,
     transition: all 0.2s ease;
     line-height: 0;
     scroll-snap-align: start;
+    min-width: 130px;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .screenshot-thumb-btn:hover {
@@ -787,14 +793,13 @@ h1, h3,
     position: fixed;
     inset: 0;
     z-index: 1000;
-    background: rgba(0, 0, 0, 0.92);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
+    padding: 1rem;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.22s ease;
@@ -803,110 +808,134 @@ h1, h3,
     opacity: 1;
     pointer-events: all;
 }
-.carousel-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 42px;
-    height: 42px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    cursor: pointer;
+
+/* ===== Carousel modal card ===== */
+.carousel-modal {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
+    width: 100%;
+    max-width: 1220px;
+    max-height: calc(100dvh - 0.5rem);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Header: counter | title | close */
+.carousel-header {
     display: flex;
     align-items: center;
-    justify-content: center;
-    transition: background 0.2s ease;
-    z-index: 10;
-    padding: 0;
-    color: #fff;
+    padding: 0.6rem 0.9rem 0.6rem 1rem;
+    background: var(--card-header-bg);
+    border-bottom: 1px solid var(--card-border);
+    flex-shrink: 0;
+    gap: 0.5rem;
+    min-height: 42px;
 }
-.carousel-close:hover { background: rgba(255, 255, 255, 0.22); }
-.carousel-close svg { width: 18px; height: 18px; }
+.carousel-counter {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 3.2rem;
+}
+.carousel-title {
+    flex: 1;
+    text-align: center;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 0.5rem;
+}
+.carousel-close {
+    flex-shrink: 0;
+    min-width: 3.2rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+}
+.carousel-close:hover { color: var(--text-primary); }
+.carousel-close svg { width: 17px; height: 17px; }
+
+/* Stage: nav arrows flanking image */
 .carousel-stage {
     display: flex;
     align-items: center;
-    gap: 1.5rem;
-    width: 100%;
-    max-width: 95vw;
-    padding: 0 1.5rem;
+    flex: 1;
     min-height: 0;
+    padding: 1rem 0.75rem;
+    gap: 0.75rem;
 }
 .carousel-img-wrap {
     flex: 1;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
     min-width: 0;
+    min-height: 0;
 }
 .carousel-img {
     max-width: 100%;
-    max-height: 85vh;
+    max-height: calc(100dvh - 220px);
     object-fit: contain;
-    border-radius: 12px;
-    box-shadow: 0 8px 48px rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
     display: block;
     transition: opacity 0.12s ease;
 }
-.carousel-meta {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.65rem;
-    margin-top: 0.5rem;
-    padding: 0 0.5rem;
-    max-width: 100%;
-    width: 100%;
-}
-.carousel-title {
-    color: rgba(255, 255, 255, 0.65);
-    font-family: 'Inter', sans-serif;
-    font-size: 0.8rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 340px;
-    flex: 1;
-    text-align: right;
-}
-.carousel-counter {
-    color: rgba(255, 255, 255, 0.35);
-    font-family: 'Fira Code', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.05em;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
 .carousel-nav {
     flex-shrink: 0;
-    width: 46px;
-    height: 46px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: color-mix(in srgb, var(--text-muted) 12%, transparent);
+    border: 1px solid var(--card-border);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease;
     padding: 0;
 }
-.carousel-nav:hover:not(:disabled) { background: rgba(255, 255, 255, 0.22); }
-.carousel-nav:disabled { opacity: 0.2; cursor: default; }
-.carousel-nav svg { width: 20px; height: 20px; stroke: #fff; stroke-width: 2; }
+.carousel-nav:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--text-muted) 22%, transparent);
+    border-color: var(--text-muted);
+}
+.carousel-nav:disabled { opacity: 0.18; cursor: default; }
+.carousel-nav svg { width: 18px; height: 18px; stroke: var(--text-primary); stroke-width: 2; }
+
+/* Thumb strip */
 .carousel-thumbs {
     display: flex;
     gap: 0.45rem;
     overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
     scrollbar-width: none;
-    padding: 0 1rem 0.25rem;
+    padding: 0.65rem 0.9rem;
     flex-shrink: 0;
-    max-width: 100%;
+    border-top: 1px solid var(--card-border);
+    background: var(--card-header-bg);
 }
 .carousel-thumbs::-webkit-scrollbar { display: none; }
 .carousel-thumb {
     flex-shrink: 0;
-    border: 2px solid rgba(255, 255, 255, 0.18);
+    border: 2px solid transparent;
     border-radius: 6px;
     overflow: hidden;
     cursor: pointer;
@@ -914,27 +943,45 @@ h1, h3,
     background: none;
     padding: 0;
     line-height: 0;
+    -webkit-tap-highlight-color: transparent;
 }
-.carousel-thumb:hover { border-color: rgba(255, 255, 255, 0.5); transform: translateY(-1px); }
+.carousel-thumb:hover { border-color: color-mix(in srgb, var(--text-muted) 60%, transparent); }
 .carousel-thumb.active { border-color: var(--accent); }
 .carousel-thumb img {
-    width: 88px;
-    height: 54px;
+    width: 84px;
+    height: 52px;
     object-fit: cover;
     display: block;
 }
 
+/* ===== Carousel responsive ===== */
 @media (max-width: 768px) {
-    .carousel-stage { gap: 0.5rem; padding: 0 0.4rem; }
-    .carousel-nav { width: 36px; height: 36px; }
-    .carousel-nav svg { width: 16px; height: 16px; }
-    .carousel-img { max-height: 75vh; border-radius: 8px; }
-    .carousel-title { font-size: 0.72rem; max-width: 160px; }
-    .screenshot-thumb-btn img { width: 90px; height: 56px; }
+    .screenshot-overlay { padding: 0.5rem; align-items: flex-end; }
+    .carousel-modal {
+        max-height: calc(100dvh - 1rem);
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom: none;
+    }
+    .carousel-stage { padding: 0.65rem 0.5rem; gap: 0.4rem; }
+    .carousel-nav { width: 34px; height: 34px; }
+    .carousel-nav svg { width: 15px; height: 15px; }
+    .carousel-img { max-height: calc(100dvh - 230px); border-radius: 8px; }
     .carousel-thumb img { width: 68px; height: 42px; }
+    .carousel-title { font-size: 0.73rem; }
+    .screenshot-thumb-btn img { width: 130px; height: 80px; }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 480px) {
+    .carousel-stage { padding: 0.5rem 0.35rem; gap: 0.25rem; }
+    .carousel-nav { width: 30px; height: 30px; }
+    .carousel-img { max-height: calc(100dvh - 210px); }
+    .carousel-thumb img { width: 56px; height: 35px; }
+    .carousel-header { padding: 0.5rem 0.75rem; }
+    .screenshot-thumb-btn img { width: 120px; height: 74px; }
+}
+
+@media (max-width: 768px) {
     .app-card {
         flex-direction: column;
         align-items: flex-start;
@@ -993,25 +1040,45 @@ h1, h3,
     }
 
     .screenshot-thumb-btn img {
-        width: 150px;
-        height: 92px;
+        width: 140px;
+        height: 86px;
+    }
+
+    .app-screenshots {
+        /* Remove negative-margin bleed — it prevents touch scroll registration on iOS */
+        display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
+        gap: 0.75rem;
+        width: 100%;
+        padding: 0.25rem 0 0.75rem;
     }
     
     .store-badges {
         display: grid;
-        grid-template-columns: 1fr;
-        gap: 0.7rem;
-        justify-items: start;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+        width: 100%;
+        max-width: 400px;
     }
 
     .store-badge-link {
         width: 100%;
-        height: 46px;
-        max-width: 240px;
+        height: 40px;
     }
     
     .store-badge-img {
-        height: 38px;
+        height: 34px;
+        width: auto;
+    }
+
+    /* Keep single column if very narrow or if only one badge */
+    @media (max-width: 360px) {
+        .store-badges {
+            grid-template-columns: 1fr;
+        }
     }
 
     .app-title { font-size: 1.2rem; }
@@ -1037,7 +1104,12 @@ h1, h3,
     .platform-tag:first-child { padding-left: 0.5rem; }
 
     .apps-filter {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        width: 100%;
         margin-bottom: 1.25rem;
+        -webkit-overflow-scrolling: touch;
     }
     .apps-filter::-webkit-scrollbar { display: none; }
     .filter-btn { flex-shrink: 0; }
