@@ -700,6 +700,19 @@ h1, h3,
     .app-meta { flex-direction: column; align-items: flex-start; }
     .app-platforms { width: 100%; }
     .app-actions { width: 100%; justify-content: flex-start; }
+    .apps-filter {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 1.75rem;
+    }
+    .apps-filter::-webkit-scrollbar { display: none; }
+    .filter-btn { flex-shrink: 0; }
+    .store-badge-img { height: 34px; }
 }
 
 /* ===== Footer ===== */
@@ -766,28 +779,27 @@ footer {
     background: var(--mobile-nav-bg);
     border-top: 1px solid var(--mobile-nav-border);
     z-index: 100;
-    justify-content: space-around;
-    padding: 0.45rem 0.5rem calc(0.45rem + env(safe-area-inset-bottom, 0px));
+    padding: 0.55rem 0.5rem calc(0.55rem + env(safe-area-inset-bottom, 0px));
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
 }
 .mobile-nav-item {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.15rem;
+    gap: 0.2rem;
     color: var(--text-muted);
     text-decoration: none;
     font-size: 0.62rem;
     font-family: 'Fira Code', monospace;
-    padding: 0.3rem 0.5rem;
-    border-radius: 6px;
-    transition: color 0.2s ease;
-    min-width: 44px;
+    padding: 0.45rem 0;
+    border-radius: 10px;
+    transition: color 0.2s ease, background 0.2s ease;
     text-align: center;
 }
-.mobile-nav-item svg { width: 20px; height: 20px; stroke-width: 1.75; }
-.mobile-nav-item.active,
+.mobile-nav-item svg { width: 22px; height: 22px; stroke-width: 1.75; }
+.mobile-nav-item.active { color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
 .mobile-nav-item:hover { color: var(--accent); }
 
 /* ===== Responsive ===== */
@@ -802,9 +814,8 @@ footer {
     .terminal-section-label { font-size: 0.76rem; }
     .terminal-path { font-size: 0.68rem; }
     .terminal-body { padding: 1.1rem 1.25rem; }
-    .experience-header { flex-direction: column; gap: 0.35rem; }
-    .dates { align-self: flex-end; }
-    .exp-list { margin-left: calc(38px + 0.6rem); }
+    .experience-header { flex-direction: column; gap: 0.2rem; }
+    .dates { align-self: flex-start; }
     .hero-content { flex-direction: column; align-items: center; }
     .hero-text { text-align: center; }
     .contact { justify-content: center; }
@@ -817,7 +828,7 @@ footer {
     .terminal-path { display: none; }
     .exp-left { gap: 0.6rem; }
     .company-logo { width: 32px; height: 32px; border-radius: 6px; }
-    .exp-list { margin-left: calc(32px + 0.6rem); }
+    .exp-list { margin-left: 0; }
     .skill-pill { font-size: 0.74rem; padding: 0.17rem 0.5rem; }
     .terminal-body { padding: 1rem; }
 }
