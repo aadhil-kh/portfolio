@@ -982,6 +982,10 @@ h1, h3,
         margin-bottom: 1.25rem;
     }
 
+    .app-info {
+        width: 100%;
+    }
+
     .app-icon-wrap {
         width: 64px;
         height: 64px;
