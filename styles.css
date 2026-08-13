@@ -1,30 +1,5 @@
 /* ===== CSS Variables / Themes ===== */
 :root {
-    --bg: #1e1e1e;
-    --card-bg: #252526;
-    --card-border: #555;
-    --card-header-bg: #2d2d2d;
-    --text-primary: #f8fafc;
-    --text-secondary: #e2e8f0;
-    --text-muted: #94a3b8;
-    --accent: #3794ff;
-    --grid-line: rgba(255, 255, 255, 0.03);
-    --shadow: rgba(0, 0, 0, 0.35);
-    --syntax-keyword: #569cd6;
-    --syntax-variable: #9cdcfe;
-    --syntax-string: #ce9178;
-    --syntax-function: #dcdcaa;
-    --syntax-comment: #6a9955;
-    --mobile-nav-bg: rgba(37, 37, 38, 0.92);
-    --mobile-nav-border: #3c3c3c;
-    
-    /* Skill Pills */
-    --pill-lang: #38bdf8;
-    --pill-fw: #fb923c;
-    --pill-back: #34d399;
-}
-
-[data-theme="light"] {
     --bg: #f8fafc;
     --card-bg: #ffffff;
     --card-border: #cbd5e1;
@@ -82,36 +57,6 @@ body {
     z-index: -1;
     pointer-events: none;
 }
-
-/* ===== Theme Toggle ===== */
-.theme-toggle {
-    position: fixed;
-    top: 1.2rem;
-    right: 1.5rem;
-    z-index: 200;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 50%;
-    width: 38px;
-    height: 38px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-muted);
-    transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 2px 8px var(--shadow);
-}
-.theme-toggle:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent);
-}
-.theme-toggle svg { width: 16px; height: 16px; }
-.icon-sun  { display: none; }
-.icon-moon { display: block; }
-[data-theme="light"] .icon-sun  { display: block; }
-[data-theme="light"] .icon-moon { display: none; }
 
 /* ===== Container ===== */
 .container {
@@ -312,9 +257,6 @@ h1, h3,
     opacity: 0.8;
     transition: opacity 0.2s ease, filter 0.2s ease;
 }
-[data-theme="dark"] .contact.icon-only img.contact-icon {
-    filter: invert(1);
-}
 .contact.icon-only .contact-link:hover .contact-icon {
     opacity: 1;
 }
@@ -327,19 +269,12 @@ h1, h3,
     transition: color 0.2s ease, opacity 0.2s ease;
 }
 
-/* Icon accent colors — subtle, theme-aware */
-.icon-x       { color: var(--text-primary); opacity: 0.75; }
-[data-theme="light"] .icon-x { color: #0f172a; }
-
-
-.icon-linkedin { color: #60a5fa; }   /* softer LinkedIn blue */
-.icon-github   { color: #a78bfa; }   /* purple */
-.icon-location { color: #34d399; }   /* teal green */
-
-[data-theme="light"] .icon-email    { color: #0ea5e9; }
-[data-theme="light"] .icon-linkedin { color: #2563eb; }
-[data-theme="light"] .icon-github   { color: #7c3aed; }
-[data-theme="light"] .icon-location { color: #059669; }
+/* Icon accent colors */
+.icon-x        { color: #0f172a; opacity: 0.75; }
+.icon-email    { color: #0ea5e9; }
+.icon-linkedin { color: #2563eb; }
+.icon-github   { color: #7c3aed; }
+.icon-location { color: #059669; }
 
 /* ===== About ===== */
 .about .terminal-body p { color: var(--text-secondary); }
@@ -567,6 +502,11 @@ h1, h3,
     box-shadow: 0 4px 12px var(--shadow);
     position: relative;
 }
+.app-icon-wrap.borderless-icon {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
 .app-icon-wrap img {
     width: 100%;
     height: 100%;
@@ -665,10 +605,6 @@ h1, h3,
     transform: translateY(-50%);
     height: 12px;
     width: 1px;
-    background: rgba(255, 255, 255, 0.18);
-}
-
-[data-theme="light"] .platform-tag:not(:last-child)::after {
     background: rgba(0, 0, 0, 0.15);
 }
 
@@ -1083,18 +1019,10 @@ footer {
     height: 16px;
     object-fit: contain;
     display: block;
-    /* Default (light mode): icons keep their brand colors */
     filter: opacity(0.75);
-}
-/* Dark mode: invert black SVG fills to white */
-[data-theme="dark"] .social-icon-img {
-    filter: invert(1) opacity(0.75);
 }
 .footer-social-link:hover .social-icon-img {
     filter: opacity(1);
-}
-[data-theme="dark"] .footer-social-link:hover .social-icon-img {
-    filter: invert(1) opacity(1);
 }
 
 /* ===== Mobile Nav ===== */
@@ -1131,7 +1059,6 @@ footer {
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
     .container { padding: 1.25rem 1rem 5.5rem; }
-    .theme-toggle { top: 0.75rem; right: 0.75rem; width: 34px; height: 34px; }
     .mobile-nav { display: flex; }
     .name { font-size: 1.65rem; }
     .title { font-size: 0.88rem; }
