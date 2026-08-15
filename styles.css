@@ -22,6 +22,9 @@
     --pill-lang: #0284c7;
     --pill-fw: #ea580c;
     --pill-back: #059669;
+    --pill-devex: #7c3aed;
+    --pill-ext: #db2777;
+    --pill-lead: #b45309;
 }
 
 /* ===== Reset ===== */
@@ -313,6 +316,9 @@ h1, h3,
 .skill-pill.keyword  { color: var(--pill-lang);  background: color-mix(in srgb, var(--pill-lang)  10%, transparent);  border-color: color-mix(in srgb, var(--pill-lang)  25%, transparent); }
 .skill-pill.string   { color: var(--pill-fw);    background: color-mix(in srgb, var(--pill-fw)    10%, transparent);  border-color: color-mix(in srgb, var(--pill-fw)    25%, transparent); }
 .skill-pill.variable { color: var(--pill-back);  background: color-mix(in srgb, var(--pill-back)  10%, transparent);  border-color: color-mix(in srgb, var(--pill-back)  25%, transparent); }
+.skill-pill.devex    { color: var(--pill-devex); background: color-mix(in srgb, var(--pill-devex) 10%, transparent);  border-color: color-mix(in srgb, var(--pill-devex) 25%, transparent); }
+.skill-pill.ext      { color: var(--pill-ext);   background: color-mix(in srgb, var(--pill-ext)   10%, transparent);  border-color: color-mix(in srgb, var(--pill-ext)   25%, transparent); }
+.skill-pill.lead     { color: var(--pill-lead);  background: color-mix(in srgb, var(--pill-lead)  10%, transparent);  border-color: color-mix(in srgb, var(--pill-lead)  25%, transparent); }
 
 /* ===== Experience Timeline ===== */
 .timeline-container {
