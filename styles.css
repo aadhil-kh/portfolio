@@ -38,6 +38,8 @@ body {
     background-color: var(--bg);
     min-height: 100vh;
     overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
 }
 
 /* ===== Top Nav ===== */
@@ -119,6 +121,7 @@ body {
     font-weight: 500;
 }
 .text-link:hover { text-decoration: underline; }
+.nowrap { white-space: nowrap; }
 
 /* ===== Hero ===== */
 .hero {
@@ -178,39 +181,36 @@ body {
 .hero-social:hover { opacity: 1; }
 .hero-social img { width: 22px; height: 22px; display: block; }
 
-/* ===== Stat Cards ===== */
+/* ===== Stat Strip ===== */
 .stats {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1rem;
-    margin-bottom: 1rem;
+    border-top: 1px solid var(--card-border);
+    border-bottom: 1px solid var(--card-border);
 }
 .stat {
-    position: relative;
     display: flex;
     flex-direction: column;
-    padding: 1.1rem 1.25rem;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 12px;
+    gap: 0.35rem;
+    padding: 1.5rem 1.75rem;
     color: inherit;
     text-decoration: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.stat:hover {
-    border-color: var(--accent);
-    box-shadow: 0 4px 14px var(--shadow);
-}
-.stat:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.stat:first-child { padding-left: 0; }
+.stat + .stat { border-left: 1px solid var(--card-border); }
+.stat:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 4px; }
 .stat-value {
-    font-size: 1.25rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
+    font-family: var(--font-serif);
+    font-size: 2.6rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.02em;
     transition: color 0.2s ease;
 }
 .stat:hover .stat-value { color: var(--accent); }
 .stat-label {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
     color: var(--text-muted);
 }
 
@@ -855,20 +855,25 @@ body {
         padding: 1.25rem 0;
     }
 
+    /* Icon sits beside the title; description and screenshots span full width */
     .app-main-content {
-        flex-direction: column;
-        gap: 1.15rem;
-        margin-bottom: 1.25rem;
+        display: grid;
+        grid-template-columns: 56px minmax(0, 1fr);
+        column-gap: 0.9rem;
+        row-gap: 0;
+        margin-bottom: 1rem;
     }
 
-    .app-info {
-        width: 100%;
-    }
+    .app-info { display: contents; }
+    .app-info > :first-child { grid-column: 2; align-self: center; }
+    .app-info .app-title { margin-bottom: 0; }
+    .app-desc, .app-screenshots-container { grid-column: 1 / -1; }
+    .app-desc { margin-top: 0.75rem; }
 
     .app-icon-wrap {
-        width: 64px;
-        height: 64px;
-        border-radius: 14px;
+        width: 56px;
+        height: 56px;
+        border-radius: 13px;
     }
 
     .screenshot-thumb-btn img {
@@ -909,8 +914,8 @@ body {
         }
     }
 
-    .app-title { font-size: 1.2rem; }
-    .app-desc { font-size: 0.88rem; margin-bottom: 1rem; }
+    .app-title { font-size: 1.1rem; line-height: 1.3; }
+    .app-desc { font-size: 0.88rem; margin-bottom: 0.85rem; }
 }
 
 /* ===== Footer ===== */
@@ -1018,7 +1023,9 @@ footer {
     .hero-sub { font-size: 0.98rem; }
     .hero-actions .btn { flex: 1 1 100%; justify-content: center; }
 
-    .stats { grid-template-columns: 1fr; gap: 0.6rem; }
+    .stat { padding: 1.1rem 0.85rem; gap: 0.3rem; }
+    .stat-value { font-size: 2rem; }
+    .stat-label { font-size: 0.78rem; line-height: 1.35; }
 
     .section { padding-top: 2.5rem; }
     .section-card { padding: 1.25rem; }
@@ -1026,15 +1033,62 @@ footer {
     .contact-cta .section-card { padding: 2rem 1.25rem; }
     .contact-cta .section-title { font-size: 1.6rem; }
 
-    .exp-item { gap: 0.9rem; padding: 1.25rem 0; }
-    .exp-logo { width: 48px; height: 48px; }
-    .exp-logo-plain, .tcs-logo { padding: 11px; }
-    .exp-head { flex-direction: column; gap: 0.35rem; }
+    .exp-card { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+
+    /* Logo sits beside the role header; bullets reclaim the full card width */
+    .exp-item {
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr);
+        column-gap: 0.85rem;
+        padding: 1.25rem 0;
+    }
+    .exp-body { display: contents; }
+    .exp-logo { width: 44px; height: 44px; align-self: start; }
+    .exp-logo-plain, .tcs-logo { padding: 10px; }
+    .exp-head { grid-column: 2; flex-direction: column; gap: 0.35rem; }
+    .exp-list { grid-column: 1 / -1; }
+    .exp-list li { font-size: 0.9rem; }
     .exp-meta { flex-direction: row; gap: 0.5rem; align-items: baseline; text-align: left; }
     .exp-duration::before { content: "\00b7"; margin-right: 0.5rem; }
     .footer-inner { justify-content: center; flex-direction: column; align-items: center; text-align: center; gap: 0.75rem; }
+    .footer-social-link { width: 42px; height: 42px; }
+    .social-icon-img { width: 18px; height: 18px; }
+
+    /* Bigger tap targets for the hero social icons without changing their look */
+    .hero-socials { gap: 1.5rem; }
+    .hero-social { padding: 10px; margin: -10px; }
+
+    /* Screenshot strip bleeds to the card edges so it reads as swipeable */
+    .app-screenshots {
+        margin: 0 -1.25rem;
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+        scroll-padding: 0 1.25rem;
+    }
 }
 
 @media (max-width: 480px) {
     .hero-headline { font-size: 1.6rem; }
+    .section-title { font-size: 1.35rem; }
+    .contact-cta .section-title { font-size: 1.45rem; }
+}
+
+@media (max-width: 360px) {
+    .container { padding-left: 0.85rem; padding-right: 0.85rem; }
+    .nav-inner { padding-left: 0.85rem; padding-right: 0.85rem; }
+    .hero-headline { font-size: 1.45rem; }
+    .stat { padding: 1rem 0.6rem; }
+    .stat-value { font-size: 1.7rem; }
+    .section-card, .service-card { padding: 1.1rem; }
+    .app-screenshots { margin: 0 -1.1rem; padding-left: 1.1rem; padding-right: 1.1rem; }
+    .mobile-nav-item { font-size: 0.62rem; }
+}
+
+/* Touch devices: no sticky hover lifts, give press feedback instead */
+@media (hover: none) {
+    .screenshot-thumb-btn:hover { transform: none; box-shadow: none; border-color: var(--card-border); }
+    .stat:hover .stat-value { color: inherit; }
+    .stat:active .stat-value { color: var(--accent); }
+    .btn:active, .screenshot-thumb-btn:active { transform: scale(0.98); }
+    .btn, .mobile-nav-item, .stat, .store-badge-link { -webkit-tap-highlight-color: transparent; }
 }
