@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fafafa">
+    <meta name="description" content="WebRendie is a desktop playground for web pages: write HTML, CSS and JavaScript in Monaco and see a live preview with a console, device sizes and an offline mock API. For Windows and Linux.">
+    <title>WebRendie | Live HTML, CSS and JavaScript playground</title>
+    <link rel="canonical" href="https://aadhil.dev/webrendie/">
+    <link rel="icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../privacy.css">
+    <style>
+        .hero { display: flex; gap: 1.5rem; align-items: center; margin-bottom: 1.5rem; }
+        .hero img { width: 96px; height: 96px; flex: none; }
+        .hero h1 { margin: 0.2rem 0 0; }
+        .lede { font-size: 1.15rem; color: var(--muted); }
+        .get { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-block: 1.5rem 0.5rem; }
+        .get a { display: inline-block; padding: 0.6rem 1.1rem; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--text); font-weight: 600; text-decoration: none; }
+        .get a:hover { border-color: var(--accent); }
+        .get a.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .note { color: var(--muted); font-size: 0.9rem; }
+        @media (max-width: 480px) {
+            .hero { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .hero img { width: 72px; height: 72px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="policy-nav">
+        <a href="../index.html">← Mohammed Aadhil’s portfolio</a>
+    </header>
+    <main>
+        <div class="hero">
+            <img src="../media/webrendie/icon.webp" alt="" width="96" height="96">
+            <div>
+                <p class="eyebrow">For Windows and Linux</p>
+                <h1>WebRendie</h1>
+            </div>
+        </div>
+        <p class="lede">A desktop playground for web pages. Write HTML, CSS and JavaScript in the Monaco editor and see the result in a live preview as you type, with a console that shows logs, objects, tables and errors.</p>
+        <div class="get">
+            <a class="primary" href="https://snapcraft.io/webrendie">Get it from the Snap Store</a>
+            <a href="https://apps.microsoft.com/detail/9PG1FWD0JRFM">Get it from Microsoft</a>
+        </div>
+        <p class="note">On Linux you can also install it from a terminal: <code>sudo snap install webrendie</code></p>
+
+        <section id="features" aria-labelledby="features-heading">
+            <h2 id="features-heading">Features</h2>
+            <ul>
+                <li>Keep several projects, each with its own files, assets and settings</li>
+                <li>Inspect console output and run code in the page with the built-in console</li>
+                <li>Preview pages at phone, tablet and desktop sizes</li>
+                <li>Answer fetch calls with an offline mock API</li>
+                <li>Add libraries from cdnjs and serve a project on localhost for your browser</li>
+                <li>Open and edit standalone HTML files next to their CSS, scripts and images</li>
+            </ul>
+        </section>
+
+        <section id="pro" aria-labelledby="pro-heading">
+            <h2 id="pro-heading">Free, with optional Pro</h2>
+            <p>WebRendie is free to use. Pro adds SCSS, Sass, TypeScript, JSX and TSX; split editor layouts; custom mock API collections; more than two projects; and project ZIP export.</p>
+            <p>Pro is a one-time license key, bought from the app (Main menu → Get Pro…) and activated there.</p>
+        </section>
+
+        <section id="support" aria-labelledby="support-heading">
+            <h2 id="support-heading">Support</h2>
+            <p>Report bugs and request features on the <a href="https://github.com/aadhil-kh/WebRendie/issues">issue tracker</a>, or write to <a href="mailto:me@aadhil.dev">me@aadhil.dev</a>.</p>
+        </section>
+    </main>
+    <footer>
+        <nav aria-label="WebRendie links">
+            <a href="license.html">Software license</a>
+            <a href="privacy.html">Privacy policy</a>
+            <a href="https://github.com/aadhil-kh/WebRendie/issues">Issues</a>
+            <span>© 2026 Mohammed Aadhil</span>
+        </nav>
+    </footer>
+</body>
+</html>
