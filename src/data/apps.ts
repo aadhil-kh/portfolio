@@ -41,6 +41,13 @@ export interface AppDef {
   links: {
     web?: string;
     stores?: Partial<Record<Platform, string>>;
+    /**
+     * Snap Store page. It sits outside `stores` because that map is keyed by
+     * Platform and its single `linux` slot is the Flathub one - STORE_BADGES
+     * draws Flathub artwork for it, so a snapcraft.io URL there would label
+     * the wrong store on the homepage card. Only apps.json.ts reads this.
+     */
+    snap?: string;
   };
 }
 
@@ -150,6 +157,7 @@ export const APPS: AppDef[] = [
     links: {
       web: 'https://apps.microsoft.com/detail/9pg1fwd0jrfm',
       stores: { windows: 'https://apps.microsoft.com/detail/9pg1fwd0jrfm' },
+      snap: 'https://snapcraft.io/webrendie',
     },
   },
   {

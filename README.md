@@ -41,8 +41,29 @@ src/
   components/          Rows, filters, artwork, nav, footer.
   layouts/             BaseLayout (head + booking script), PageLayout.
   pages/               index, changelog/, blog/.
+  pages/apps.json.ts   The app catalog my Windows apps read. See below.
   styles/              global.css (site-wide), changelog.css, prose.css.
 ```
+
+## The app catalog at /apps.json
+
+`src/pages/apps.json.ts` generates <https://aadhil.dev/apps.json> from
+`src/data/apps.ts` on every build and every dev request. It is consumed by my
+shipped Windows apps: each one embeds `FluentKit.Controls.MyApps`, whose "more
+apps from me" dialog fetches that URL and caches it for 24 hours. The URL is
+hardcoded in the kit, so adding an app to `apps.ts` and redeploying the site
+updates the dialog in every app already on the Store - no rebuild, no
+resubmission.
+
+**`id` values in `apps.ts` are permanent.** Each app passes its own id to the
+dialog so it can exclude itself from its own list. A shipped id that changes
+makes that app list itself. Renaming an app is fine; renaming its `id` is not.
+
+The endpoint derives each platform's deep link (`ms-windows-store://`,
+`market://`, `itms-apps://`, `macappstore://`, `snap://`, `appstream://`) from
+the store URL already in `apps.ts`, and throws on a store URL whose shape it
+does not recognise - so a listing that moves fails the build rather than going
+quietly missing from the dialog.
 
 ## Adding a release
 
