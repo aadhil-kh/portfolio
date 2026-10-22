@@ -1,5 +1,6 @@
 ---
-import { STORE_BADGES, type AppDef } from '../data/apps';
+import { storeLinksFor, type AppDef } from '../data/apps';
+import { appChangelogHref } from '../lib/changelog';
 
 export interface Props {
   app: AppDef;
@@ -15,12 +16,7 @@ if (webUrl) {
   webUrl = `${webUrl}${separator}ref=aadhil.dev`;
 }
 
-const stores = app.links.stores ?? {};
-const storeLinks = STORE_BADGES.flatMap((badge) => {
-  const key = badge.keys.find((k) => stores[k as keyof typeof stores]);
-  if (!key) return [];
-  return [{ ...badge, href: stores[key as keyof typeof stores]! }];
-});
+const storeLinks = storeLinksFor(app);
 
 const shots = app.screenshots ?? [];
 const hasStores = storeLinks.length > 0;
@@ -65,7 +61,7 @@ const hasStores = storeLinks.length > 0;
 
       {
         hasReleases && (
-          <a href={`/changelog?app=${app.id}`} class="app-changelog-link">
+          <a href={appChangelogHref(app.id)} class="app-changelog-link">
             <svg
               viewBox="0 0 24 24"
               fill="none"

@@ -1,20 +1,26 @@
 ---
-import { render, type CollectionEntry } from 'astro:content';
-import PageLayout from '../../layouts/PageLayout.astro';
-import CardArtwork from '../../components/CardArtwork.astro';
-import PlatformBadge from '../../components/PlatformBadge.astro';
-import { getReleases } from '../../lib/changelog';
-import { getApp } from '../../data/apps';
-import { platformLabel, sortPlatforms } from '../../data/platforms';
-import '../../styles/changelog.css';
-import '../../styles/prose.css';
+import { render } from 'astro:content';
+import PageLayout from '../../../layouts/PageLayout.astro';
+import CardArtwork from '../../../components/CardArtwork.astro';
+import PlatformBadge from '../../../components/PlatformBadge.astro';
+import GetApp from '../../../components/GetApp.astro';
+import { appChangelogHref, getReleases, type Release } from '../../../lib/changelog';
+import { getApp } from '../../../data/apps';
+import { platformLabel, sortPlatforms } from '../../../data/platforms';
+import { absolute, breadcrumbs, personRef, softwareApplication } from '../../../lib/seo';
+import '../../../styles/changelog.css';
+import '../../../styles/prose.css';
 
 export async function getStaticPaths() {
   const releases = await getReleases();
-  return releases.map((r) => ({ params: { slug: r.slug }, props: { entry: r.entry, slug: r.slug } }));
+  return releases.map((r) => ({
+    params: { app: r.data.app, version: r.version },
+    props: { release: r },
+  }));
 }
 
-const { entry, slug } = Astro.props as { entry: CollectionEntry<'changelog'>; slug: string };
+const { release } = Astro.props as { release: Release };
+const { entry, href } = release;
 const d = entry.data;
 const { Content } = await render(entry);
 
@@ -31,19 +37,50 @@ const prettyDate = d.date.toLocaleDateString('en-GB', {
   year: 'numeric',
 });
 
-const storeLink = platforms.map((p) => app?.links.stores?.[p]).find(Boolean);
+
+const site = Astro.site!;
+const description = d.summary ?? `Release notes for ${name} ${d.version}.`;
+const jsonLd = [
+  {
+    '@type': 'TechArticle',
+    headline: heading,
+    description,
+    datePublished: isoDate,
+    url: absolute(href, site),
+    image: d.image ? absolute(d.image, site) : undefined,
+    author: personRef(site),
+    about: app ? softwareApplication(app, site, { version: d.version, href }) : undefined,
+  },
+  breadcrumbs(
+    [
+      ['Changelog', '/changelog/'],
+      [name, appChangelogHref(d.app)],
+      [`v${d.version}`, href],
+    ],
+    site,
+  ),
+];
 ---
 
+{/*
+  The title leads with app and version - what someone searching for these
+  notes types - and the release's own headline follows when it has one.
+*/}
 <PageLayout
-  title={`${name} ${d.version}`}
-  description={d.summary ?? `Release notes for ${name} ${d.version}.`}
-  ogImage={d.image}
+  title={`${name} ${d.version}${d.title ? `: ${d.title}` : ' release notes'}`}
+  description={description}
+  ogImage={d.image ?? app?.icon}
+  ogImageAlt={d.image ? d.imageAlt : undefined}
+  smallImage={!d.image}
+  article={{ published: d.date }}
+  feeds={[{ title: `${name} releases`, href: `${appChangelogHref(d.app)}rss.xml` }]}
+  jsonLd={jsonLd}
   active="changelog">
   <article class="section cl-detail">
     <nav class="cl-breadcrumb" aria-label="Breadcrumb">
-      <a href="/changelog">Changelog</a>
+      <a href="/changelog/">Changelog</a>
       <span aria-hidden="true">/</span>
-      <a href={`/changelog?app=${d.app}`}>{name}</a>
+      <a href={appChangelogHref(d.app)}>{name}</a>
       <span aria-hidden="true">/</span>
       <span>v{d.version}</span>
     </nav>
@@ -81,7 +118,7 @@ const storeLink = platforms.map((p) => app?.links.stores?.[p]).find(Boolean);
         heading={`v${d.version}`}
         sub={platforms.map(platformLabel).join(' / ')}
         accent={accent}
-        uid={`detail-${slug.replace(/[^a-z0-9]+/gi, '-')}`}
+        uid={`detail-${href.replace(/[^a-z0-9]+/gi, '-')}`}
         loading="eager"
       />
     </div>
@@ -103,6 +140,13 @@ const storeLink = platforms.map((p) => app?.links.stores?.[p]).find(Boolean);
         <Content />
       </div>
 
+      {/*
+        After the notes rather than above them: someone opening release notes
+        came to read them, and the stores are the natural next step once they
+        have. The panel lists every store, not just this release's platforms.
+      */}
+      {app && <GetApp app={app} />}
+
       <div class="cl-detail-actions">
         {
           d.downloadUrl && (
@@ -111,14 +155,7 @@ const storeLink = platforms.map((p) => app?.links.stores?.[p]).find(Boolean);
             </a>
           )
         }
-        {
-          !d.downloadUrl && storeLink && (
-            <a href={storeLink} class="btn btn-primary" target="_blank" rel="noopener">
-              Get {name}
-            </a>
-          )
-        }
-        <a href="/changelog" class="btn btn-secondary">All releases</a>
+        <a href={appChangelogHref(d.app)} class="btn btn-secondary">All {name} releases</a>
       </div>
 
       {

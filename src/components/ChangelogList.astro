@@ -1,0 +1,176 @@
+---
+import ChangelogFilters from './ChangelogFilters.astro';
+import ChangelogRow from './ChangelogRow.astro';
+import type { Release } from '../lib/changelog';
+import { appName } from '../data/apps';
+import { PLATFORM_IDS, platformLabel } from '../data/platforms';
+
+export interface Props {
+  /** Every published release, which the app picker counts over. */
+  all: Release[];
+  /** The app this page is about; omitted on /changelog/. */
+  currentApp?: string;
+}
+
+const { all, currentApp } = Astro.props;
+const shown = currentApp ? all.filter((r) => r.data.app === currentApp) : all;
+
+// Only offer a filter for something that actually has releases, and show the
+// count so an empty result is never a surprise.
+const appCounts = new Map<string, number>();
+for (const r of all) appCounts.set(r.data.app, (appCounts.get(r.data.app) ?? 0) + 1);
+
+const platformCounts = new Map<string, number>();
+for (const r of shown) {
+  for (const p of r.data.platforms) platformCounts.set(p, (platformCounts.get(p) ?? 0) + 1);
+}
+
+const apps = [...appCounts.entries()]
+  .map(([id, count]) => ({ id, name: appName(id), count }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+const platforms = PLATFORM_IDS.filter((p) => platformCounts.has(p)).map((id) => ({
+  id,
+  label: platformLabel(id),
+  count: platformCounts.get(id) ?? 0,
+}));
+---
+
+<ChangelogFilters
+  apps={apps}
+  platforms={platforms}
+  total={all.length}
+  count={shown.length}
+  currentApp={currentApp}
+/>
+
+<div class="cl-list" id="cl-list">
+  {shown.map((r) => <ChangelogRow entry={r.entry} href={r.href} />)}
+</div>
+
+<p class="cl-no-results" id="cl-no-results" hidden>No releases match those filters.</p>
+
+<script>
+  /**
+   * The app picker moves between pages - /changelog/ and /changelog/<app>/ are
+   * each built statically, so an app's releases have a URL of their own to
+   * link from a store listing and to be indexed. Platform and sort only
+   * rearrange what is already on the page, client side, with their state in
+   * the query string (?platform=&sort=) so a filtered view survives a reload.
+   */
+  const list = document.getElementById('cl-list');
+  const filters = document.getElementById('cl-filters');
+
+  if (list && filters) {
+    const rows = Array.from(list.querySelectorAll<HTMLElement>('.cl-row'));
+    const appSel = document.getElementById('cl-app') as HTMLSelectElement | null;
+    const platformSel = document.getElementById('cl-platform') as HTMLSelectElement | null;
+    const sortSel = document.getElementById('cl-sort') as HTMLSelectElement | null;
+    const countEl = document.getElementById('cl-count');
+    const clearBtn = document.getElementById('cl-clear');
+    const noResults = document.getElementById('cl-no-results');
+
+    const currentApp = filters.dataset.app ?? 'all';
+    const state = { platform: 'all', sort: 'desc' };
+
+    // Rows are sorted newest-first at build time; this is the stable baseline
+    // both sort directions derive from.
+    const baseline = rows.slice();
+
+    function appPath(app: string) {
+      return app === 'all' ? '/changelog/' : `/changelog/${app}/`;
+    }
+
+    function query() {
+      const q = new URLSearchParams();
+      if (state.platform !== 'all') q.set('platform', state.platform);
+      if (state.sort !== 'desc') q.set('sort', state.sort);
+      const qs = q.toString();
+      return qs ? `?${qs}` : '';
+    }
+
+    function readUrl() {
+      const q = new URLSearchParams(location.search);
+      const platform = q.get('platform');
+      const sort = q.get('sort');
+
+      if (platform && rows.some((r) => (r.dataset.platforms ?? '').split(' ').includes(platform))) {
+        state.platform = platform;
+      }
+      if (sort === 'asc' || sort === 'desc') state.sort = sort;
+
+      // /changelog/?app=<id> was the URL before apps had pages of their own.
+      const app = q.get('app');
+      if (currentApp === 'all' && app && appSel?.querySelector(`option[value="${CSS.escape(app)}"]`)) {
+        location.replace(appPath(app) + query());
+        return false;
+      }
+      return true;
+    }
+
+    function syncControls() {
+      for (const [sel, value, dflt] of [
+        [appSel, currentApp, 'all'],
+        [platformSel, state.platform, 'all'],
+        [sortSel, state.sort, 'desc'],
+      ] as const) {
+        if (!sel) continue;
+        sel.value = value;
+        // Tints the control so an applied filter is visible without reading it.
+        sel.dataset.active = String(value !== dflt);
+      }
+    }
+
+    function apply() {
+      const ordered = state.sort === 'asc' ? baseline.slice().reverse() : baseline;
+
+      let shown = 0;
+      for (const row of ordered) {
+        const visible =
+          state.platform === 'all' ||
+          (row.dataset.platforms ?? '').split(' ').includes(state.platform);
+
+        row.hidden = !visible;
+        if (visible) shown++;
+      }
+
+      // Reorder in the DOM so the sort direction actually takes effect.
+      for (const row of ordered) list!.appendChild(row);
+
+      if (countEl) {
+        countEl.textContent = `${shown} release${shown === 1 ? '' : 's'}`;
+      }
+      if (noResults) noResults.hidden = shown !== 0;
+      if (clearBtn) {
+        clearBtn.hidden = currentApp === 'all' && state.platform === 'all' && state.sort === 'desc';
+      }
+
+      syncControls();
+      history.replaceState(null, '', location.pathname + query());
+    }
+
+    filters.addEventListener('change', (e) => {
+      const sel = e.target as HTMLSelectElement;
+      const kind = sel.dataset?.filter as 'app' | 'platform' | 'sort' | undefined;
+      if (!kind) return;
+      if (kind === 'app') {
+        location.href = appPath(sel.value) + query();
+        return;
+      }
+      state[kind] = sel.value;
+      apply();
+    });
+
+    clearBtn?.addEventListener('click', () => {
+      state.platform = 'all';
+      state.sort = 'desc';
+      if (currentApp !== 'all') {
+        location.href = appPath('all');
+        return;
+      }
+      apply();
+    });
+
+    if (readUrl()) apply();
+  }
+</script>

@@ -1,0 +1,62 @@
+---
+import PageLayout from '../../../layouts/PageLayout.astro';
+import ChangelogList from '../../../components/ChangelogList.astro';
+import GetApp from '../../../components/GetApp.astro';
+import { appChangelogHref, getReleases, type Release } from '../../../lib/changelog';
+import { getApp, type AppDef } from '../../../data/apps';
+import { breadcrumbs, softwareApplication } from '../../../lib/seo';
+import '../../../styles/changelog.css';
+
+/**
+ * One page per app that has published releases - /changelog/<app>/ is the
+ * address to quote in store listings and release notes. An app with nothing
+ * published gets no page rather than an empty one.
+ */
+export async function getStaticPaths() {
+  const all = await getReleases();
+  const ids = [...new Set(all.map((r) => r.data.app))];
+  return ids.map((id) => ({ params: { app: id }, props: { all, app: getApp(id) } }));
+}
+
+const { all, app } = Astro.props as { all: Release[]; app: AppDef | undefined };
+const id = Astro.params.app!;
+const name = app?.name ?? id;
+const latest = all.find((r) => r.data.app === id)!;
+
+const site = Astro.site!;
+---
+
+<PageLayout
+  title={`${name} changelog`}
+  description={`Release notes for ${app?.title ?? name}, every version newest first. Latest: ${latest.data.version}. ${app?.description ?? ''}`.trim()}
+  ogImage={app?.icon}
+  smallImage
+  feeds={[{ title: `${name} releases`, href: `${appChangelogHref(id)}rss.xml` }]}
+  jsonLd={[
+    ...(app ? [softwareApplication(app, site, { version: latest.data.version, href: latest.href })] : []),
+    breadcrumbs(
+      [
+        ['Changelog', '/changelog/'],
+        [name, appChangelogHref(id)],
+      ],
+      site,
+    ),
+  ]}
+  active="changelog">
+  <section class="section">
+    <nav class="cl-breadcrumb" aria-label="Breadcrumb">
+      <a href="/changelog/">Changelog</a>
+      <span aria-hidden="true">/</span>
+      <span>{name}</span>
+    </nav>
+
+    <div class="section-head">
+      <h1 class="section-title">{name} changelog</h1>
+      <p class="section-desc">{app?.description}</p>
+    </div>
+
+    {app && <GetApp app={app} />}
+
+    <ChangelogList all={all} currentApp={id} />
+  </section>
+</PageLayout>

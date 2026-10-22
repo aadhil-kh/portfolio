@@ -1,4 +1,6 @@
 ---
+import { SOCIAL_LINKS } from '../data/site';
+
 const policies = [
   { href: '/solipdf/privacy.html', label: 'SoliPDF' },
   { href: '/webdevtools/privacy.html', label: 'webdevtools' },
@@ -9,21 +11,7 @@ const policies = [
   { href: '/json_tools/privacy.html', label: 'JSON Tools' },
 ];
 
-const socials = [
-  { href: 'https://x.com/aadhilkh', img: '/media/images/x-logo.svg', label: 'X / Twitter', alt: 'X' },
-  {
-    href: 'https://www.linkedin.com/in/aadhilkh',
-    img: '/media/images/linkedin-logo.svg',
-    label: 'LinkedIn',
-    alt: 'LinkedIn',
-  },
-  {
-    href: 'https://github.com/aadhil-kh',
-    img: '/media/images/github-logo.svg',
-    label: 'GitHub',
-    alt: 'GitHub',
-  },
-];
+const socials = SOCIAL_LINKS;
 ---
 
 <footer>

@@ -2,10 +2,15 @@
 export interface Props {
   apps: { id: string; name: string; count: number }[];
   platforms: { id: string; label: string; count: number }[];
+  /** Releases across every app, for the "All apps" option. */
   total: number;
+  /** Releases on this page. */
+  count: number;
+  /** The app this page is about, or undefined on /changelog/. */
+  currentApp?: string;
 }
 
-const { apps, platforms, total } = Astro.props;
+const { apps, platforms, total, count, currentApp } = Astro.props;
 ---
 
 {/*
@@ -13,12 +18,18 @@ const { apps, platforms, total } = Astro.props;
   its height as the app list grows, and on a phone each one opens the OS
   picker instead of wrapping into another row of targets.
 */}
-<div class="cl-filters" id="cl-filters">
+<div class="cl-filters" id="cl-filters" data-app={currentApp ?? 'all'}>
   <div class="cl-field">
     <label class="cl-sr-only" for="cl-app">Filter by app</label>
     <select class="cl-select" id="cl-app" data-filter="app">
-      <option value="all">All apps ({total})</option>
-      {apps.map((a) => <option value={a.id}>{a.name} ({a.count})</option>)}
+      <option value="all" selected={!currentApp}>All apps ({total})</option>
+      {
+        apps.map((a) => (
+          <option value={a.id} selected={a.id === currentApp}>
+            {a.name} ({a.count})
+          </option>
+        ))
+      }
     </select>
   </div>
 
@@ -39,7 +50,7 @@ const { apps, platforms, total } = Astro.props;
   </div>
 
   <p class="cl-count" id="cl-count" aria-live="polite">
-    {total} release{total === 1 ? '' : 's'}
+    {count} release{count === 1 ? '' : 's'}
   </p>
 
   <button type="button" class="cl-clear" id="cl-clear" hidden>Clear</button>

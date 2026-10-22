@@ -5,7 +5,7 @@ import { getApp } from '../data/apps';
 import { platformLabel, sortPlatforms } from '../data/platforms';
 
 export interface Props {
-  slug: string;
+  href: string;
   entry: {
     id: string;
     data: {
@@ -23,7 +23,7 @@ export interface Props {
   };
 }
 
-const { entry, slug } = Astro.props;
+const { entry, href } = Astro.props;
 const d = entry.data;
 
 const app = getApp(d.app);
@@ -31,7 +31,6 @@ const name = app?.name ?? d.app;
 const accent = app?.accent ?? '#2563eb';
 const platforms = sortPlatforms(d.platforms);
 
-const href = `/changelog/${slug}`;
 const heading = d.title ?? `${name} ${d.version}`;
 const isoDate = d.date.toISOString().slice(0, 10);
 const prettyDate = d.date.toLocaleDateString('en-GB', {
@@ -56,7 +55,7 @@ const prettyDate = d.date.toLocaleDateString('en-GB', {
       heading={`v${d.version}`}
       sub={platforms.map(platformLabel).join(' / ')}
       accent={accent}
-      uid={slug.replace(/[^a-z0-9]+/gi, '-')}
+      uid={href.replace(/[^a-z0-9]+/gi, '-')}
     />
   </div>
 

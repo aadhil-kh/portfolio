@@ -24,7 +24,7 @@ const app = d.app ? getApp(d.app) : undefined;
 const accent = app?.accent ?? '#2563eb';
 const eyebrow = app?.name ?? (d.tags[0] ?? 'Writing');
 
-const href = `/blog/${entry.id}`;
+const href = `/blog/${entry.id}/`;
 const isoDate = d.date.toISOString().slice(0, 10);
 const prettyDate = d.date.toLocaleDateString('en-GB', {
   day: 'numeric',

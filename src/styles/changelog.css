@@ -552,6 +552,78 @@
     padding-top: 0.9rem;
 }
 
+/* ===== Get the app (app page and release page) ===== */
+.get-app {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 1.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 1.1rem 1.35rem;
+}
+
+/* On the app page it sits between the description and the filter bar */
+.section-head + .get-app {
+    margin-bottom: 1.25rem;
+}
+
+/* On the release page it closes the notes, inside their card */
+.cl-detail-body .get-app {
+    background: var(--card-header-bg);
+    border-color: transparent;
+}
+
+.get-app-intro {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    min-width: 0;
+}
+
+.get-app-title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.get-app-sub {
+    font-size: 0.86rem;
+    color: var(--text-muted);
+}
+
+.get-app-stores {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.6rem;
+}
+
+.get-app-store {
+    display: flex;
+    align-items: center;
+    height: 44px;
+    line-height: 0;
+    border-radius: 8px;
+    transition: opacity 0.2s ease;
+}
+
+.get-app-store:hover {
+    opacity: 0.85;
+}
+
+.get-app-badge {
+    height: 40px;
+    width: auto;
+}
+
+/* Flathub's badge is 3:1 with a transparent margin, so it needs more height to match */
+.get-app-badge.badge-flathub {
+    height: 44px;
+}
+
 /* ===== Blog post ===== */
 .post-head {
     margin-bottom: 1.5rem;
@@ -648,6 +720,18 @@
 
     .cl-detail-title {
         font-size: 1.5rem;
+    }
+
+    .get-app {
+        padding: 1rem;
+    }
+
+    .get-app-badge {
+        height: 36px;
+    }
+
+    .get-app-badge.badge-flathub {
+        height: 40px;
     }
 
     .post-title {

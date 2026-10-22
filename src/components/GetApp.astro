@@ -1,0 +1,64 @@
+---
+import { storeLinksFor, websiteFor, type AppDef } from '../data/apps';
+import { platformLabel, sortPlatforms } from '../data/platforms';
+
+export interface Props {
+  app: AppDef;
+}
+
+const { app } = Astro.props;
+
+const stores = storeLinksFor(app);
+const website = websiteFor(app);
+
+// Every platform the app is on, not only the ones a given release touched: a
+// reader of the macOS notes may well be on Windows.
+const platforms = sortPlatforms(Object.keys(app.links.stores ?? {})).map(platformLabel);
+const available =
+  platforms.length > 1
+    ? `${platforms.slice(0, -1).join(', ')} and ${platforms.at(-1)}`
+    : platforms[0];
+---
+
+{/*
+  One panel for "where do I get this", shared by an app's changelog page and
+  each of its release pages, so the two can never list different stores.
+  Nothing renders for an app with neither a store nor a site.
+*/}
+{
+  (stores.length > 0 || website) && (
+    <aside class="get-app" aria-label={`Get ${app.name}`}>
+      <div class="get-app-intro">
+        {app.icon && (
+          <span class:list={['cl-app-icon', 'lg', { borderless: app.borderlessIcon }]}>
+            <img src={app.icon} alt="" loading="lazy" />
+          </span>
+        )}
+        <div>
+          <p class="get-app-title">Get {app.name}</p>
+          <p class="get-app-sub">
+            {available && <>Available on {available}.</>}
+            {website && (
+              <>
+                {' '}
+                <a href={website} target="_blank" rel="noopener" class="text-link">
+                  Website
+                </a>
+              </>
+            )}
+          </p>
+        </div>
+      </div>
+
+      {stores.length > 0 && (
+        <div class="get-app-stores">
+          {stores.map((s) => (
+            <a href={s.href} target="_blank" rel="noopener" class="get-app-store" title={s.title}>
+              <img src={s.img} alt={s.alt} class:list={['get-app-badge', s.cls]} />
+            </a>
+          ))}
+        </div>
+      )}
+    </aside>
+  )
+}

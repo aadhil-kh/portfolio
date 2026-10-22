@@ -48,7 +48,7 @@ export const APPS: AppDef[] = [
   {
     id: 'devt-pro',
     name: 'DevT Pro',
-    title: 'DevT Pro',
+    title: 'DevT Pro - Developer Toolbox',
     description:
       'All-in-one developer utilities: JSON formatter, API tester, regex helper, and more.',
     icon: '/media/images/devt-pro.jpg',
@@ -294,3 +294,22 @@ export const STORE_BADGES: StoreBadge[] = [
     cls: 'badge-flathub',
   },
 ];
+
+/** The badges an app actually has, each carrying its store link. */
+export function storeLinksFor(app: AppDef): (StoreBadge & { href: string })[] {
+  const stores = app.links.stores ?? {};
+  return STORE_BADGES.flatMap((badge) => {
+    const key = badge.keys.find((k) => stores[k]);
+    return key ? [{ ...badge, href: stores[key]! }] : [];
+  });
+}
+
+/**
+ * The app's own website, when it has one that is not just a store page -
+ * tagged so the site can tell the visit came from here.
+ */
+export function websiteFor(app: AppDef): string | undefined {
+  const web = app.links.web;
+  if (!web || Object.values(app.links.stores ?? {}).includes(web)) return undefined;
+  return `${web}${web.includes('?') ? '&' : '?'}ref=aadhil.dev`;
+}

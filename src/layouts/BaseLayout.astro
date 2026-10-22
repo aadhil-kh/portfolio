@@ -1,20 +1,58 @@
 ---
 import '../styles/global.css';
+import { SITE_NAME, SOCIAL_LINKS } from '../data/site';
+import { graph, person, website, type JsonLd } from '../lib/seo';
 
 export interface Props {
   title: string;
   description: string;
   /** Absolute or root-relative image for social cards. */
   ogImage?: string;
+  ogImageAlt?: string;
+  /** The image is a square icon, not a wide screenshot: use the small card. */
+  smallImage?: boolean;
+  /** Marks the page as an article for link previews: posts and releases. */
+  article?: { published: Date; modified?: Date };
+  /** Page-specific schema.org nodes, added after the person and website. */
+  jsonLd?: JsonLd[];
+  /** Feeds beyond the two site-wide ones, e.g. one app's releases. */
+  feeds?: { title: string; href: string }[];
   /** Set on long-form pages so the browser tab reads "<page> - Mohammed Aadhil". */
   suffixTitle?: boolean;
 }
 
-const { title, description, ogImage, suffixTitle = true } = Astro.props;
+const {
+  title,
+  description,
+  ogImage,
+  ogImageAlt,
+  smallImage = false,
+  article,
+  jsonLd = [],
+  feeds = [],
+  suffixTitle = true,
+} = Astro.props;
 
-const fullTitle = suffixTitle ? `${title} - Mohammed Aadhil` : title;
-const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const ogUrl = ogImage ? new URL(ogImage, Astro.site).href : undefined;
+const site = Astro.site!;
+const fullTitle = suffixTitle ? `${title} - ${SITE_NAME}` : title;
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogUrl = ogImage ? new URL(ogImage, site).href : undefined;
+
+const xHandle = SOCIAL_LINKS.find((s) => /\/\/(x|twitter)\.com\//.test(s.href))
+  ?.href.split('/')
+  .pop();
+
+const allFeeds = [
+  ...feeds,
+  { title: `${SITE_NAME} - Changelog`, href: '/changelog/rss.xml' },
+  { title: `${SITE_NAME} - Blog`, href: '/blog/rss.xml' },
+];
+
+// "</script>" inside a string would end the tag early; JSON allows the escape.
+const ldJson = JSON.stringify(graph([person(site), website(site), ...jsonLd])).replaceAll(
+  '<',
+  '\\' + 'u003c',
+);
 ---
 
 <!DOCTYPE html>
@@ -27,13 +65,36 @@ const ogUrl = ogImage ? new URL(ogImage, Astro.site).href : undefined;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.ico" />
+    {
+      allFeeds.map((f) => (
+        <link rel="alternate" type="application/rss+xml" title={f.title} href={f.href} />
+      ))
+    }
 
-    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:type" content={article ? 'article' : 'website'} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     {ogUrl && <meta property="og:image" content={ogUrl} />}
-    <meta name="twitter:card" content={ogUrl ? 'summary_large_image' : 'summary'} />
+    {ogUrl && ogImageAlt && <meta property="og:image:alt" content={ogImageAlt} />}
+    {
+      article && (
+        <meta property="article:published_time" content={article.published.toISOString()} />
+      )
+    }
+    {
+      article?.modified && (
+        <meta property="article:modified_time" content={article.modified.toISOString()} />
+      )
+    }
+    <meta
+      name="twitter:card"
+      content={ogUrl && !smallImage ? 'summary_large_image' : 'summary'}
+    />
+    {xHandle && <meta name="twitter:site" content={`@${xHandle}`} />}
+
+    <script type="application/ld+json" set:html={ldJson} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
