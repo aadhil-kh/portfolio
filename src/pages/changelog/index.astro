@@ -1,0 +1,183 @@
+---
+import PageLayout from '../../layouts/PageLayout.astro';
+import ChangelogFilters from '../../components/ChangelogFilters.astro';
+import ChangelogRow from '../../components/ChangelogRow.astro';
+import { getReleases } from '../../lib/changelog';
+import { appName } from '../../data/apps';
+import { PLATFORM_IDS, platformLabel } from '../../data/platforms';
+import '../../styles/changelog.css';
+
+const entries = await getReleases();
+
+// Only offer a filter for something that actually has releases, and show the
+// count so an empty result is never a surprise.
+const appCounts = new Map<string, number>();
+const platformCounts = new Map<string, number>();
+
+for (const e of entries) {
+  appCounts.set(e.data.app, (appCounts.get(e.data.app) ?? 0) + 1);
+  for (const p of e.data.platforms) {
+    platformCounts.set(p, (platformCounts.get(p) ?? 0) + 1);
+  }
+}
+
+const apps = [...appCounts.entries()]
+  .map(([id, count]) => ({ id, name: appName(id), count }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+const platforms = PLATFORM_IDS.filter((p) => platformCounts.has(p)).map((id) => ({
+  id,
+  label: platformLabel(id),
+  count: platformCounts.get(id) ?? 0,
+}));
+---
+
+<PageLayout
+  title="Changelog"
+  description="Release notes for every app I ship - Developer Tools Pro, SoliPDF, SplitBrowse, WebRendie and more, filterable by app and platform."
+  active="changelog">
+  <section class="section">
+    <div class="section-head">
+      <h1 class="section-title">Changelog</h1>
+      <p class="section-desc">
+        Every release across my apps, newest first. Filter by app or platform, or flip the
+        order.
+      </p>
+    </div>
+
+    {
+      entries.length === 0 ? (
+        <div class="section-card cl-empty-state">
+          <h2>No releases published yet</h2>
+          <p>
+            Run <code>npm run admin</code> to write one, or drop a markdown file into{' '}
+            <code>src/content/changelog/</code> yourself - either way it shows up here.
+          </p>
+        </div>
+      ) : (
+        <>
+          <ChangelogFilters apps={apps} platforms={platforms} total={entries.length} />
+
+          <div class="cl-list" id="cl-list">
+            {entries.map((entry) => (
+              <ChangelogRow entry={entry.entry} slug={entry.slug} />
+            ))}
+          </div>
+
+          <p class="cl-no-results" id="cl-no-results" hidden>
+            No releases match those filters.
+          </p>
+        </>
+      )
+    }
+  </section>
+</PageLayout>
+
+<script>
+  /**
+   * Filter + sort, entirely client side over the statically rendered rows.
+   * State lives in the URL (?app=&platform=&sort=) so a filtered view is
+   * shareable and survives a reload.
+   */
+  const list = document.getElementById('cl-list');
+  const filters = document.getElementById('cl-filters');
+
+  if (list && filters) {
+    const rows = Array.from(list.querySelectorAll<HTMLElement>('.cl-row'));
+    const appSel = document.getElementById('cl-app') as HTMLSelectElement | null;
+    const platformSel = document.getElementById('cl-platform') as HTMLSelectElement | null;
+    const sortSel = document.getElementById('cl-sort') as HTMLSelectElement | null;
+    const countEl = document.getElementById('cl-count');
+    const clearBtn = document.getElementById('cl-clear');
+    const noResults = document.getElementById('cl-no-results');
+
+    const state = { app: 'all', platform: 'all', sort: 'desc' };
+
+    // Rows are sorted newest-first at build time; this is the stable baseline
+    // both sort directions derive from.
+    const baseline = rows.slice();
+
+    function readUrl() {
+      const q = new URLSearchParams(location.search);
+      const app = q.get('app');
+      const platform = q.get('platform');
+      const sort = q.get('sort');
+
+      if (app && rows.some((r) => r.dataset.app === app)) state.app = app;
+      if (platform && rows.some((r) => (r.dataset.platforms ?? '').split(' ').includes(platform))) {
+        state.platform = platform;
+      }
+      if (sort === 'asc' || sort === 'desc') state.sort = sort;
+    }
+
+    function writeUrl() {
+      const q = new URLSearchParams();
+      if (state.app !== 'all') q.set('app', state.app);
+      if (state.platform !== 'all') q.set('platform', state.platform);
+      if (state.sort !== 'desc') q.set('sort', state.sort);
+      const qs = q.toString();
+      history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+    }
+
+    function syncControls() {
+      for (const [sel, value, dflt] of [
+        [appSel, state.app, 'all'],
+        [platformSel, state.platform, 'all'],
+        [sortSel, state.sort, 'desc'],
+      ] as const) {
+        if (!sel) continue;
+        sel.value = value;
+        // Tints the control so an applied filter is visible without reading it.
+        sel.dataset.active = String(value !== dflt);
+      }
+    }
+
+    function apply() {
+      const ordered = state.sort === 'asc' ? baseline.slice().reverse() : baseline;
+
+      let shown = 0;
+      for (const row of ordered) {
+        const matchesApp = state.app === 'all' || row.dataset.app === state.app;
+        const matchesPlatform =
+          state.platform === 'all' ||
+          (row.dataset.platforms ?? '').split(' ').includes(state.platform);
+        const visible = matchesApp && matchesPlatform;
+
+        row.hidden = !visible;
+        if (visible) shown++;
+      }
+
+      // Reorder in the DOM so the sort direction actually takes effect.
+      for (const row of ordered) list!.appendChild(row);
+
+      if (countEl) {
+        countEl.textContent = `${shown} release${shown === 1 ? '' : 's'}`;
+      }
+      if (noResults) noResults.hidden = shown !== 0;
+      if (clearBtn) {
+        clearBtn.hidden = state.app === 'all' && state.platform === 'all' && state.sort === 'desc';
+      }
+
+      syncControls();
+      writeUrl();
+    }
+
+    filters.addEventListener('change', (e) => {
+      const sel = e.target as HTMLSelectElement;
+      const kind = sel.dataset?.filter as 'app' | 'platform' | 'sort' | undefined;
+      if (!kind) return;
+      state[kind] = sel.value;
+      apply();
+    });
+
+    clearBtn?.addEventListener('click', () => {
+      state.app = 'all';
+      state.platform = 'all';
+      state.sort = 'desc';
+      apply();
+    });
+
+    readUrl();
+    apply();
+  }
+</script>

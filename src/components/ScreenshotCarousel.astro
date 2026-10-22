@@ -1,0 +1,199 @@
+---
+import type { AppDef } from '../data/apps';
+
+export interface Props {
+  apps: AppDef[];
+}
+
+const { apps } = Astro.props;
+
+// The overlay reads its shots from this JSON island rather than from inline
+// JS, so no app data has to be interpolated into a script body.
+const shotData = Object.fromEntries(
+  apps
+    .filter((a) => (a.screenshots ?? []).length > 0)
+    .map((a) => [a.id, { title: a.title, shots: a.screenshots }]),
+);
+
+// Escaping "<" keeps a stray "</script>" in any title from closing the tag.
+const shotJson = JSON.stringify(shotData).replace(/</g, '\\u003c');
+---
+
+<script type="application/json" id="apps-screenshots" set:html={shotJson} />
+
+<div
+  class="screenshot-overlay"
+  id="screenshot-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Screenshot viewer"
+  aria-hidden="true">
+  <div class="carousel-modal" id="carousel-modal">
+    <div class="carousel-header">
+      <span class="carousel-counter" id="carousel-counter"></span>
+      <span class="carousel-title" id="carousel-title"></span>
+      <button class="carousel-close" id="carousel-close" aria-label="Close screenshots">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="carousel-stage">
+      <button class="carousel-nav carousel-prev" id="carousel-prev" aria-label="Previous screenshot">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg
+        >
+      </button>
+      <div class="carousel-img-wrap">
+        {/* No src until a shot is picked - an empty src would re-request the page. */}
+        <img class="carousel-img" id="carousel-img" alt="Screenshot" />
+      </div>
+      <button class="carousel-nav carousel-next" id="carousel-next" aria-label="Next screenshot">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg
+        >
+      </button>
+    </div>
+    <div class="carousel-thumbs" id="carousel-thumbs"></div>
+  </div>
+</div>
+
+<script>
+  interface Shot {
+    src: string;
+    title: string;
+  }
+
+  const dataEl = document.getElementById('apps-screenshots');
+  const appShots: Record<string, { title: string; shots: Shot[] }> = dataEl
+    ? JSON.parse(dataEl.textContent || '{}')
+    : {};
+
+  let carouselShots: Shot[] = [];
+  let carouselIdx = 0;
+
+  const overlay = document.getElementById('screenshot-overlay')!;
+  const carModal = document.getElementById('carousel-modal')!;
+  const carImg = document.getElementById('carousel-img') as HTMLImageElement;
+  const carTitle = document.getElementById('carousel-title')!;
+  const carCounter = document.getElementById('carousel-counter')!;
+  const carThumbs = document.getElementById('carousel-thumbs')!;
+  const carPrev = document.getElementById('carousel-prev') as HTMLButtonElement;
+  const carNext = document.getElementById('carousel-next') as HTMLButtonElement;
+  const carClose = document.getElementById('carousel-close')!;
+
+  function setCarouselIndex(i: number) {
+    carouselIdx = Math.max(0, Math.min(i, carouselShots.length - 1));
+    const shot = carouselShots[carouselIdx];
+    carImg.style.opacity = '0';
+    setTimeout(() => {
+      carImg.src = shot.src;
+      carImg.alt = shot.title;
+      carImg.style.opacity = '1';
+    }, 80);
+    carTitle.textContent = shot.title;
+    carCounter.textContent = `${carouselIdx + 1} / ${carouselShots.length}`;
+    carPrev.disabled = carouselIdx === 0;
+    carNext.disabled = carouselIdx === carouselShots.length - 1;
+    carThumbs
+      .querySelectorAll('.carousel-thumb')
+      .forEach((t, j) => t.classList.toggle('active', j === carouselIdx));
+    const activeThumb = carThumbs.querySelector('.carousel-thumb.active');
+    if (activeThumb) {
+      activeThumb.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+    }
+  }
+
+  function normalizeShot(s: Shot, appTitle: string, idx: number): Shot {
+    return { src: s.src, title: s.title || `${appTitle} - Screenshot ${idx + 1}` };
+  }
+
+  function openCarousel(shots: Shot[], startIdx: number, appTitle: string) {
+    carouselShots = shots.map((s, i) => normalizeShot(s, appTitle, i));
+
+    carThumbs.replaceChildren(
+      ...carouselShots.map((s, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'carousel-thumb';
+        btn.dataset.idx = String(i);
+        btn.title = s.title;
+        const img = document.createElement('img');
+        img.src = s.src;
+        img.alt = s.title;
+        img.loading = 'lazy';
+        btn.appendChild(img);
+        btn.addEventListener('click', () => setCarouselIndex(i));
+        return btn;
+      }),
+    );
+
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    setCarouselIndex(startIdx || 0);
+  }
+
+  function closeCarousel() {
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  carClose.addEventListener('click', closeCarousel);
+  carPrev.addEventListener('click', () => setCarouselIndex(carouselIdx - 1));
+  carNext.addEventListener('click', () => setCarouselIndex(carouselIdx + 1));
+  // Click on backdrop (outside modal) closes; modal itself stops propagation
+  overlay.addEventListener('click', closeCarousel);
+  carModal.addEventListener('click', (e) => e.stopPropagation());
+
+  document.addEventListener('keydown', (e) => {
+    if (!overlay.classList.contains('open')) return;
+    if (e.key === 'Escape') closeCarousel();
+    else if (e.key === 'ArrowLeft') setCarouselIndex(carouselIdx - 1);
+    else if (e.key === 'ArrowRight') setCarouselIndex(carouselIdx + 1);
+  });
+
+  let touchStartX = 0;
+  carModal.addEventListener(
+    'touchstart',
+    (e) => {
+      touchStartX = e.touches[0].clientX;
+    },
+    { passive: true },
+  );
+  carModal.addEventListener(
+    'touchend',
+    (e) => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 40) {
+        dx < 0 ? setCarouselIndex(carouselIdx + 1) : setCarouselIndex(carouselIdx - 1);
+      }
+    },
+    { passive: true },
+  );
+
+  document.getElementById('apps-list')?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLElement>('.screenshot-thumb-btn');
+    if (!btn) return;
+    const app = appShots[btn.dataset.appId ?? ''];
+    if (app && app.shots.length > 0) {
+      openCarousel(app.shots, parseInt(btn.dataset.index ?? '0', 10), app.title);
+    }
+  });
+</script>

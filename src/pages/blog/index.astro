@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import PostRow from '../../components/PostRow.astro';
+import '../../styles/changelog.css';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => import.meta.env.DEV || !p.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<PageLayout
+  title="Blog"
+  description="Notes on building and shipping desktop apps, Zoho CRM development, and developer tooling."
+  active="blog">
+  <section class="section">
+    <div class="section-head">
+      <h1 class="section-title">Blog</h1>
+      <p class="section-desc">
+        Notes on building and shipping apps, Zoho CRM development, and developer tooling.
+      </p>
+    </div>
+
+    {
+      posts.length === 0 ? (
+        <div class="section-card cl-empty-state">
+          <h2>Nothing published yet</h2>
+          <p>
+            Run <code>npm run admin</code> to write one, or add a markdown file to{' '}
+            <code>src/content/blog/</code> with a title, description and date.
+          </p>
+        </div>
+      ) : (
+        <div class="cl-list">
+          {posts.map((entry) => (
+            <PostRow entry={entry} />
+          ))}
+        </div>
+      )
+    }
+  </section>
+</PageLayout>

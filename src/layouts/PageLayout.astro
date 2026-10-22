@@ -1,0 +1,35 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import SiteNav from '../components/SiteNav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileNav from '../components/MobileNav.astro';
+import type { MobileNavItem } from '../components/MobileNav.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  active?: 'changelog' | 'blog' | null;
+}
+
+const { title, description, ogImage, active = null } = Astro.props;
+
+const mobileItems: MobileNavItem[] = [
+  { href: '/', label: 'Home', icon: 'home' },
+  { href: '/#apps', label: 'Apps', icon: 'apps' },
+  { href: '/changelog', label: 'Changelog', icon: 'changelog', active: active === 'changelog' },
+  { href: '/blog', label: 'Blog', icon: 'blog', active: active === 'blog' },
+  { href: '/#contact', label: 'Contact', icon: 'contact' },
+];
+---
+
+<BaseLayout title={title} description={description} ogImage={ogImage}>
+  <SiteNav variant="page" active={active} />
+  <div class="container">
+    <main>
+      <slot />
+    </main>
+    <SiteFooter />
+  </div>
+  <MobileNav items={mobileItems} />
+</BaseLayout>

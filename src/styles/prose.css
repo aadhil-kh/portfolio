@@ -1,0 +1,192 @@
+/* ============================================================
+   Long-form markdown body, used by changelog detail pages and
+   blog posts. Scoped under .prose so it never leaks into the
+   rest of the site.
+   ============================================================ */
+
+.prose {
+    font-size: 1rem;
+    line-height: 1.72;
+    color: var(--text-secondary);
+    max-width: 68ch;
+}
+
+.prose > * + * {
+    margin-top: 1.05rem;
+}
+
+.prose h2,
+.prose h3,
+.prose h4 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    color: var(--text-primary);
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+}
+
+.prose h2 {
+    font-size: 1.4rem;
+    margin-top: 2.1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.prose h3 {
+    font-size: 1.14rem;
+    margin-top: 1.7rem;
+}
+
+.prose h4 {
+    font-size: 1rem;
+    margin-top: 1.4rem;
+}
+
+.prose p {
+    margin-top: 1.05rem;
+}
+
+.prose a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+}
+
+.prose a:hover {
+    color: var(--accent-hover);
+}
+
+.prose strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.prose ul,
+.prose ol {
+    padding-left: 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.prose ul {
+    list-style: none;
+    padding-left: 1.15rem;
+}
+
+.prose ul > li {
+    position: relative;
+    padding-left: 0.1rem;
+}
+
+.prose ul > li::before {
+    content: '';
+    position: absolute;
+    left: -0.95rem;
+    top: 0.62em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.55;
+}
+
+.prose ol {
+    list-style: decimal;
+}
+
+.prose ol > li::marker {
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.prose li > ul,
+.prose li > ol {
+    margin-top: 0.4rem;
+}
+
+.prose blockquote {
+    border-left: 3px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    background: var(--accent-soft);
+    border-radius: 0 8px 8px 0;
+    padding: 0.8rem 1.1rem;
+    color: var(--text-secondary);
+}
+
+.prose blockquote > * + * {
+    margin-top: 0.6rem;
+}
+
+.prose code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.87em;
+    background: var(--card-header-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 5px;
+    padding: 0.1em 0.36em;
+    word-break: break-word;
+}
+
+.prose pre {
+    background: var(--card-header-bg) !important;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    overflow-x: auto;
+    font-size: 0.86rem;
+    line-height: 1.6;
+}
+
+.prose pre code {
+    background: none;
+    border: 0;
+    padding: 0;
+    font-size: inherit;
+}
+
+.prose img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+}
+
+.prose hr {
+    border: 0;
+    border-top: 1px solid var(--card-border);
+    margin: 2rem 0;
+}
+
+.prose table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    display: block;
+    overflow-x: auto;
+}
+
+.prose th,
+.prose td {
+    border: 1px solid var(--card-border);
+    padding: 0.5rem 0.7rem;
+    text-align: left;
+}
+
+.prose th {
+    background: var(--card-header-bg);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.prose kbd {
+    font-family: inherit;
+    font-size: 0.82em;
+    background: var(--card-bg);
+    border: 1px solid var(--border-strong);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    padding: 0.1em 0.4em;
+    color: var(--text-primary);
+}

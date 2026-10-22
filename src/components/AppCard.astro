@@ -1,0 +1,125 @@
+---
+import { STORE_BADGES, type AppDef } from '../data/apps';
+
+export interface Props {
+  app: AppDef;
+  /** Adds a "Changelog" link when this app has published releases. */
+  hasReleases?: boolean;
+}
+
+const { app, hasReleases = false } = Astro.props;
+
+let webUrl = app.links.web;
+if (webUrl) {
+  const separator = webUrl.includes('?') ? '&' : '?';
+  webUrl = `${webUrl}${separator}ref=aadhil.dev`;
+}
+
+const stores = app.links.stores ?? {};
+const storeLinks = STORE_BADGES.flatMap((badge) => {
+  const key = badge.keys.find((k) => stores[k as keyof typeof stores]);
+  if (!key) return [];
+  return [{ ...badge, href: stores[key as keyof typeof stores]! }];
+});
+
+const shots = app.screenshots ?? [];
+const hasStores = storeLinks.length > 0;
+---
+
+<div class="app-card" id={`app-${app.id}`}>
+  <div class="app-main-content">
+    <div class:list={['app-icon-wrap', { 'borderless-icon': app.borderlessIcon }]}>
+      {
+        app.icon ? (
+          <img src={app.icon} alt={app.title} />
+        ) : (
+          <span class="app-icon-placeholder">{app.title.charAt(0)}</span>
+        )
+      }
+    </div>
+    <div class="app-info">
+      {
+        webUrl ? (
+          <a href={webUrl} target="_blank" rel="noopener" class="app-title-link">
+            <span class="app-title">
+              <span>{app.title}</span>
+              <svg
+                class="external-link-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+            </span>
+          </a>
+        ) : (
+          <span class="app-title">{app.title}</span>
+        )
+      }
+      <p class="app-desc">{app.description}</p>
+
+      {
+        hasReleases && (
+          <a href={`/changelog?app=${app.id}`} class="app-changelog-link">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true">
+              <path d="M8 6h12" /> <path d="M8 12h12" /> <path d="M8 18h12" />
+              <circle cx="4" cy="6" r="1.4" /> <circle cx="4" cy="12" r="1.4" />
+              <circle cx="4" cy="18" r="1.4" />
+            </svg>
+            Changelog
+          </a>
+        )
+      }
+
+      {
+        shots.length > 0 && (
+          <div class="app-screenshots-container">
+            <div class="app-screenshots">
+              {shots.map((shot, i) => (
+                <button
+                  class="screenshot-thumb-btn"
+                  data-app-id={app.id}
+                  data-index={i}
+                  aria-label={`View screenshot ${i + 1}${shot.title ? ': ' + shot.title : ''}`}
+                  title={shot.title}>
+                  <img src={shot.src} alt={shot.title} loading="lazy" />
+                </button>
+              ))}
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </div>
+  {hasStores && <div class="app-vertical-rule" />}
+  {
+    hasStores && (
+      <div class="app-store-actions">
+        <div class="store-badges">
+          {storeLinks.map((badge) => (
+            <a
+              href={badge.href}
+              target="_blank"
+              rel="noopener"
+              class="store-badge-link"
+              title={badge.title}>
+              <img src={badge.img} class:list={['store-badge-img', badge.cls]} alt={badge.alt} />
+            </a>
+          ))}
+        </div>
+      </div>
+    )
+  }
+</div>

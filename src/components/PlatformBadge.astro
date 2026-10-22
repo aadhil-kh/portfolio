@@ -1,0 +1,28 @@
+---
+import { PLATFORMS, type Platform } from '../data/platforms';
+
+export interface Props {
+  platform: string;
+  /** 'icon' drops the text label, for tight rows. */
+  size?: 'full' | 'icon';
+}
+
+const { platform, size = 'full' } = Astro.props;
+const def = PLATFORMS[platform as Platform];
+---
+
+{
+  def ? (
+    <span
+      class:list={['platform-badge', { 'platform-badge-icon': size === 'icon' }]}
+      data-platform={def.id}
+      title={def.label}>
+      <svg viewBox="0 0 24 24" aria-hidden="true" set:html={def.icon} />
+      {size === 'full' && <span>{def.label}</span>}
+    </span>
+  ) : (
+    <span class="platform-badge" data-platform={platform}>
+      <span>{platform}</span>
+    </span>
+  )
+}

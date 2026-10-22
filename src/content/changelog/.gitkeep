@@ -1,0 +1,4 @@
+# Keeps this directory in git so the content loader always has a base to
+# look at. Releases land here as <app>-<version>.md - see the README, or
+# run 'npm run admin'. The glob loader only reads *.md, so this file is
+# invisible to the build.

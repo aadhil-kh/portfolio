@@ -1,0 +1,52 @@
+---
+const policies = [
+  { href: '/solipdf/privacy.html', label: 'SoliPDF' },
+  { href: '/webdevtools/privacy.html', label: 'webdevtools' },
+  { href: '/qr-code-generator-pro/privacy.html', label: 'QR Code Generator Pro' },
+  { href: '/webrendie/privacy.html', label: 'WebRendie' },
+  { href: '/bargen/privacy.html', label: 'Bargen' },
+  { href: '/json-safari/privacy.html', label: 'JSON Safari' },
+  { href: '/json_tools/privacy.html', label: 'JSON Tools' },
+];
+
+const socials = [
+  { href: 'https://x.com/aadhilkh', img: '/media/images/x-logo.svg', label: 'X / Twitter', alt: 'X' },
+  {
+    href: 'https://www.linkedin.com/in/aadhilkh',
+    img: '/media/images/linkedin-logo.svg',
+    label: 'LinkedIn',
+    alt: 'LinkedIn',
+  },
+  {
+    href: 'https://github.com/aadhil-kh',
+    img: '/media/images/github-logo.svg',
+    label: 'GitHub',
+    alt: 'GitHub',
+  },
+];
+---
+
+<footer>
+  <nav class="footer-policies" aria-label="App privacy policies">
+    <span>Privacy policies</span>
+    {policies.map((p) => <a href={p.href}>{p.label}</a>)}
+  </nav>
+  <div class="footer-inner">
+    <p class="footer-copy">&copy; {new Date().getFullYear()} Mohammed Aadhil</p>
+    <div class="footer-socials">
+      {
+        socials.map((s) => (
+          <a
+            href={s.href}
+            target="_blank"
+            rel="noopener"
+            class="footer-social-link"
+            title={s.label}
+            aria-label={s.label}>
+            <img src={s.img} alt={s.alt} class="social-icon-img" />
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</footer>

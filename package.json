@@ -1,0 +1,24 @@
+{
+  "name": "portfolio",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "release": "node scripts/new-release.mjs",
+    "admin": "node scripts/admin.mjs"
+  },
+  "dependencies": {
+    "astro": "~7.3.8",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "marked": "^18.1.1",
+    "typescript": "^6.0.3"
+  }
+}

@@ -1,0 +1,90 @@
+---
+import CardArtwork from './CardArtwork.astro';
+import { getApp } from '../data/apps';
+
+export interface Props {
+  entry: {
+    id: string;
+    data: {
+      title: string;
+      description: string;
+      date: Date;
+      tags: string[];
+      image?: string;
+      imageAlt?: string;
+      app?: string;
+    };
+  };
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+
+const app = d.app ? getApp(d.app) : undefined;
+const accent = app?.accent ?? '#2563eb';
+const eyebrow = app?.name ?? (d.tags[0] ?? 'Writing');
+
+const href = `/blog/${entry.id}`;
+const isoDate = d.date.toISOString().slice(0, 10);
+const prettyDate = d.date.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+});
+---
+
+<article class="cl-row">
+  <div class="cl-row-media">
+    <CardArtwork
+      image={d.image}
+      imageAlt={d.imageAlt}
+      eyebrow={eyebrow}
+      heading={d.title}
+      sub={prettyDate}
+      accent={accent}
+      uid={`post-${entry.id.replace(/[^a-z0-9]+/gi, '-')}`}
+    />
+  </div>
+
+  <div class="cl-row-body">
+    <div class="cl-row-meta">
+      <time class="cl-date" datetime={isoDate}>{prettyDate}</time>
+      {
+        d.tags.length > 0 && (
+          <>
+            <span class="cl-dot" aria-hidden="true">
+              &middot;
+            </span>
+            <span class="cl-tags">
+              {d.tags.slice(0, 3).map((t) => (
+                <span class="cl-tag">{t}</span>
+              ))}
+            </span>
+          </>
+        )
+      }
+    </div>
+
+    <h3 class="cl-row-title">
+      <a href={href} class="cl-row-link">{d.title}</a>
+    </h3>
+
+    <p class="cl-row-summary">{d.description}</p>
+
+    <div class="cl-row-footer">
+      <div class="cl-row-links">
+        <span class="cl-read-more" aria-hidden="true">
+          Read post
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg
+          >
+        </span>
+      </div>
+    </div>
+  </div>
+</article>

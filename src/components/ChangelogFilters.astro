@@ -1,0 +1,46 @@
+---
+export interface Props {
+  apps: { id: string; name: string; count: number }[];
+  platforms: { id: string; label: string; count: number }[];
+  total: number;
+}
+
+const { apps, platforms, total } = Astro.props;
+---
+
+{/*
+  Three selects on one line. Native controls rather than chips: the bar keeps
+  its height as the app list grows, and on a phone each one opens the OS
+  picker instead of wrapping into another row of targets.
+*/}
+<div class="cl-filters" id="cl-filters">
+  <div class="cl-field">
+    <label class="cl-sr-only" for="cl-app">Filter by app</label>
+    <select class="cl-select" id="cl-app" data-filter="app">
+      <option value="all">All apps ({total})</option>
+      {apps.map((a) => <option value={a.id}>{a.name} ({a.count})</option>)}
+    </select>
+  </div>
+
+  <div class="cl-field">
+    <label class="cl-sr-only" for="cl-platform">Filter by platform</label>
+    <select class="cl-select" id="cl-platform" data-filter="platform">
+      <option value="all">All platforms</option>
+      {platforms.map((p) => <option value={p.id}>{p.label} ({p.count})</option>)}
+    </select>
+  </div>
+
+  <div class="cl-field">
+    <label class="cl-sr-only" for="cl-sort">Sort order</label>
+    <select class="cl-select" id="cl-sort" data-filter="sort">
+      <option value="desc">Newest first</option>
+      <option value="asc">Oldest first</option>
+    </select>
+  </div>
+
+  <p class="cl-count" id="cl-count" aria-live="polite">
+    {total} release{total === 1 ? '' : 's'}
+  </p>
+
+  <button type="button" class="cl-clear" id="cl-clear" hidden>Clear</button>
+</div>

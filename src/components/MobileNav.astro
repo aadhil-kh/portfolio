@@ -1,0 +1,59 @@
+---
+export type MobileNavIcon =
+  | 'home'
+  | 'services'
+  | 'apps'
+  | 'work'
+  | 'contact'
+  | 'changelog'
+  | 'blog';
+
+export interface MobileNavItem {
+  href: string;
+  label: string;
+  icon: MobileNavIcon;
+  /** Section id the IntersectionObserver watches (homepage only). */
+  section?: string;
+  active?: boolean;
+}
+
+export interface Props {
+  items: MobileNavItem[];
+}
+
+const { items } = Astro.props;
+
+const ICONS: Record<MobileNavIcon, string> = {
+  home: '<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>',
+  services:
+    '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>',
+  apps: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  work: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+  contact: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/>',
+  changelog:
+    '<path d="M8 6h12"/><path d="M8 12h12"/><path d="M8 18h12"/><circle cx="4" cy="6" r="1.4"/><circle cx="4" cy="12" r="1.4"/><circle cx="4" cy="18" r="1.4"/>',
+  blog: '<path d="M4 5a2 2 0 0 1 2-2h11a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a2 2 0 0 1-2-2z"/><path d="M8 7h6"/><path d="M8 11h6"/><path d="M8 15h4"/>',
+};
+---
+
+<nav class="mobile-nav" id="mobile-nav" aria-label="Site navigation">
+  {
+    items.map((item) => (
+      <a
+        href={item.href}
+        class:list={['mobile-nav-item', { active: item.active }]}
+        data-section={item.section}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          set:html={ICONS[item.icon]}
+        />
+        <span>{item.label}</span>
+      </a>
+    ))
+  }
+</nav>

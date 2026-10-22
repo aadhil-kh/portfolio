@@ -1103,3 +1103,40 @@ footer {
     .btn:active, .screenshot-thumb-btn:active { transform: scale(0.98); }
     .btn, .mobile-nav-item, .stat, .store-badge-link { -webkit-tap-highlight-color: transparent; }
 }
+
+/* ===== Added by the Astro migration ===== */
+
+/* Active nav link on subpages (changelog, blog) */
+.nav-links a.is-active {
+    color: var(--accent);
+    font-weight: 500;
+}
+
+/* "Changelog" link on an app card, shown when the app has releases */
+.app-changelog-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.33rem;
+    align-self: flex-start;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    padding: 0.24rem 0.6rem;
+    margin-top: 0.2rem;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.app-changelog-link svg { width: 13px; height: 13px; }
+.app-changelog-link:hover {
+    color: var(--accent-hover);
+    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+    background: var(--accent-soft);
+}
+
+/* The desktop nav carries two more links now; claw back a little room. */
+@media (max-width: 1040px) {
+    .nav-links { gap: 1.15rem; }
+    .nav-inner { gap: 1.25rem; }
+}

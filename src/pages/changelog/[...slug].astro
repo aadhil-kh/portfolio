@@ -1,0 +1,134 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import CardArtwork from '../../components/CardArtwork.astro';
+import PlatformBadge from '../../components/PlatformBadge.astro';
+import { getReleases } from '../../lib/changelog';
+import { getApp } from '../../data/apps';
+import { platformLabel, sortPlatforms } from '../../data/platforms';
+import '../../styles/changelog.css';
+import '../../styles/prose.css';
+
+export async function getStaticPaths() {
+  const releases = await getReleases();
+  return releases.map((r) => ({ params: { slug: r.slug }, props: { entry: r.entry, slug: r.slug } }));
+}
+
+const { entry, slug } = Astro.props as { entry: CollectionEntry<'changelog'>; slug: string };
+const d = entry.data;
+const { Content } = await render(entry);
+
+const app = getApp(d.app);
+const name = app?.name ?? d.app;
+const accent = app?.accent ?? '#2563eb';
+const platforms = sortPlatforms(d.platforms);
+
+const heading = d.title ?? `${name} ${d.version}`;
+const isoDate = d.date.toISOString().slice(0, 10);
+const prettyDate = d.date.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+
+const storeLink = platforms.map((p) => app?.links.stores?.[p]).find(Boolean);
+---
+
+<PageLayout
+  title={`${name} ${d.version}`}
+  description={d.summary ?? `Release notes for ${name} ${d.version}.`}
+  ogImage={d.image}
+  active="changelog">
+  <article class="section cl-detail">
+    <nav class="cl-breadcrumb" aria-label="Breadcrumb">
+      <a href="/changelog">Changelog</a>
+      <span aria-hidden="true">/</span>
+      <a href={`/changelog?app=${d.app}`}>{name}</a>
+      <span aria-hidden="true">/</span>
+      <span>v{d.version}</span>
+    </nav>
+
+    <header class="cl-detail-head">
+      <div class="cl-detail-meta">
+        {
+          app?.icon && (
+            <span class:list={['cl-app-icon', 'lg', { borderless: app.borderlessIcon }]}>
+              <img src={app.icon} alt="" />
+            </span>
+          )
+        }
+        <div>
+          <p class="cl-detail-eyebrow">
+            {name}
+            <span class="cl-dot" aria-hidden="true">&middot;</span>
+            <time datetime={isoDate}>{prettyDate}</time>
+          </p>
+          <h1 class="cl-detail-title">{heading}</h1>
+        </div>
+      </div>
+
+      <div class="cl-detail-badges">
+        <span class="cl-version lg">v{d.version}</span>
+        {platforms.map((p) => <PlatformBadge platform={p} />)}
+      </div>
+    </header>
+
+    <div class="cl-detail-art">
+      <CardArtwork
+        image={d.image}
+        imageAlt={d.imageAlt}
+        eyebrow={name}
+        heading={`v${d.version}`}
+        sub={platforms.map(platformLabel).join(' / ')}
+        accent={accent}
+        uid={`detail-${slug.replace(/[^a-z0-9]+/gi, '-')}`}
+        loading="eager"
+      />
+    </div>
+
+    <div class="section-card cl-detail-body">
+      {d.summary && <p class="cl-detail-summary">{d.summary}</p>}
+
+      {
+        d.highlights.length > 0 && (
+          <ul class="cl-highlights lg">
+            {d.highlights.map((h) => (
+              <li>{h}</li>
+            ))}
+          </ul>
+        )
+      }
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <div class="cl-detail-actions">
+        {
+          d.downloadUrl && (
+            <a href={d.downloadUrl} class="btn btn-primary" target="_blank" rel="noopener">
+              Download v{d.version}
+            </a>
+          )
+        }
+        {
+          !d.downloadUrl && storeLink && (
+            <a href={storeLink} class="btn btn-primary" target="_blank" rel="noopener">
+              Get {name}
+            </a>
+          )
+        }
+        <a href="/changelog" class="btn btn-secondary">All releases</a>
+      </div>
+
+      {
+        d.source?.repo && d.source.from && d.source.to && (
+          <p class="cl-source-note">
+            Built from <code>{d.source.from}</code>..<code>{d.source.to}</code>
+            {d.source.commitCount ? ` (${d.source.commitCount} commits)` : ''}
+          </p>
+        )
+      }
+    </div>
+  </article>
+</PageLayout>

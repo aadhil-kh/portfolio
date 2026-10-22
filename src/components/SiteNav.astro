@@ -1,0 +1,39 @@
+---
+export interface Props {
+  /**
+   * 'home' points the section links at in-page anchors; 'page' prefixes them
+   * with / so they jump back to the homepage from a subpage.
+   */
+  variant?: 'home' | 'page';
+  /** Highlights the matching nav link. */
+  active?: 'changelog' | 'blog' | null;
+}
+
+const { variant = 'home', active = null } = Astro.props;
+const root = variant === 'home' ? '' : '/';
+
+const links = [
+  { href: `${root}#services`, label: 'Services', key: null },
+  { href: `${root}#apps`, label: 'Apps', key: null },
+  { href: '/changelog', label: 'Changelog', key: 'changelog' },
+  { href: '/blog', label: 'Blog', key: 'blog' },
+  { href: `${root}#experience`, label: 'Work', key: null },
+  { href: `${root}#skills`, label: 'Skills', key: null },
+];
+---
+
+<header class="site-nav">
+  <div class="nav-inner">
+    <a href={variant === 'home' ? '#profile' : '/'} class="nav-brand">Mohammed Aadhil</a>
+    <nav class="nav-links" aria-label="Sections">
+      {
+        links.map((l) => (
+          <a href={l.href} class={l.key && l.key === active ? 'is-active' : undefined}>
+            {l.label}
+          </a>
+        ))
+      }
+    </nav>
+    <a href={`${root}#contact`} class="btn btn-secondary btn-sm">Contact</a>
+  </div>
+</header>

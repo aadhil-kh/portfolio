@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Content admin</title>
+    <link rel="stylesheet" href="/site/prose.css" />
+    <style>
+      /* The tokens prose.css reads, copied from src/styles/global.css so the
+         preview pane renders in the site's own colours. The site is
+         light-only, so there is no dark variant to mirror. */
+      :root {
+        --bg: #fafafa;
+        --card-bg: #ffffff;
+        --card-border: #e4e4e7;
+        --card-header-bg: #f4f4f5;
+        --border-strong: #d4d4d8;
+        --text-primary: #18181b;
+        --text-secondary: #3f3f46;
+        --text-muted: #71717a;
+        --accent: #2563eb;
+        --accent-hover: #1d4ed8;
+        --accent-soft: #eff6ff;
+        --danger: #b91c1c;
+        --success: #15803d;
+        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+        --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: var(--font-sans);
+        font-size: 14px;
+        color: var(--text-primary);
+        background: var(--bg);
+        height: 100vh;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+      }
+
+      /* ===== Top bar ===== */
+      header {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        padding: 0.55rem 1rem;
+        background: var(--card-bg);
+        border-bottom: 1px solid var(--card-border);
+      }
+
+      .tabs {
+        display: inline-flex;
+        background: var(--card-header-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 9px;
+        padding: 3px;
+        gap: 3px;
+      }
+
+      .tab {
+        font: inherit;
+        font-size: 0.84rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        background: transparent;
+        border: 0;
+        border-radius: 6px;
+        padding: 0.3rem 0.7rem;
+        cursor: pointer;
+      }
+
+      .tab.is-on {
+        background: var(--card-bg);
+        color: var(--text-primary);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+      }
+
+      header .file {
+        font-family: var(--font-mono);
+        font-size: 0.76rem;
+        color: var(--text-muted);
+        background: var(--card-header-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 6px;
+        padding: 0.16rem 0.42rem;
+        max-width: 26ch;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      header .spacer {
+        margin-left: auto;
+      }
+
+      #status {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        max-width: 42ch;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      #status.ok {
+        color: var(--success);
+      }
+
+      #status.err {
+        color: var(--danger);
+        white-space: normal;
+      }
+
+      /* ===== Layout ===== */
+      main {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        min-height: 0;
+      }
+
+      #list {
+        border-right: 1px solid var(--card-border);
+        background: var(--card-bg);
+        overflow-y: auto;
+        padding: 0.5rem;
+      }
+
+      .entry {
+        display: block;
+        width: 100%;
+        text-align: left;
+        font: inherit;
+        background: none;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        padding: 0.45rem 0.55rem;
+        cursor: pointer;
+        color: inherit;
+      }
+
+      .entry:hover {
+        background: var(--card-header-bg);
+      }
+
+      .entry.is-on {
+        background: var(--accent-soft);
+        border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+      }
+
+      .entry .ttl {
+        display: block;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .entry .sub {
+        display: block;
+        font-size: 0.74rem;
+        color: var(--text-muted);
+        margin-top: 0.1rem;
+      }
+
+      .flag {
+        font-size: 0.68rem;
+        color: var(--accent-hover);
+        border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+        border-radius: 4px;
+        padding: 0 0.22rem;
+        margin-left: 0.25rem;
+      }
+
+      .muted-note {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        padding: 0.5rem;
+      }
+
+      /* ===== Form ===== */
+      #pane {
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        min-width: 0;
+        min-height: 0;
+      }
+
+      #meta {
+        padding: 0.8rem 1rem;
+        background: var(--card-bg);
+        border-bottom: 1px solid var(--card-border);
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem 0.9rem;
+        align-content: start;
+        max-height: 44vh;
+        overflow-y: auto;
+      }
+
+      /* `display: grid` above beats the user-agent [hidden] rule, so folding
+         the panel away needs saying explicitly. */
+      #meta[hidden] {
+        display: none;
+      }
+
+      .f {
+        display: flex;
+        flex-direction: column;
+        gap: 0.22rem;
+        min-width: 0;
+      }
+
+      .f.full {
+        grid-column: 1 / -1;
+      }
+
+      .lbl {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+
+      .lbl .req {
+        color: var(--danger);
+        margin-left: 0.15rem;
+      }
+
+      .hint {
+        font-size: 0.74rem;
+        font-weight: 400;
+        letter-spacing: 0;
+        text-transform: none;
+        color: var(--text-muted);
+      }
+
+      input[type='text'],
+      input[type='date'],
+      select,
+      textarea {
+        font-family: inherit;
+        font-size: 0.86rem;
+        color: var(--text-primary);
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 7px;
+        padding: 0.4rem 0.5rem;
+        width: 100%;
+        min-width: 0;
+      }
+
+      input:focus-visible,
+      select:focus-visible,
+      textarea:focus-visible,
+      button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+      }
+
+      textarea {
+        resize: vertical;
+        line-height: 1.5;
+      }
+
+      .toggles {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+      }
+
+      .toggles label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        background: var(--card-header-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 999px;
+        padding: 0.24rem 0.55rem;
+        cursor: pointer;
+      }
+
+      .toggles label:has(input:checked) {
+        background: var(--accent-soft);
+        border-color: color-mix(in srgb, var(--accent) 38%, transparent);
+        color: var(--accent-hover);
+      }
+
+      .toggles input {
+        margin: 0;
+      }
+
+      .checkline {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.84rem;
+        color: var(--text-secondary);
+        cursor: pointer;
+      }
+
+      .row {
+        display: flex;
+        gap: 0.35rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .icon-btn {
+        font: inherit;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        background: var(--card-header-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 7px;
+        padding: 0 0.55rem;
+        cursor: pointer;
+        flex: none;
+      }
+
+      .icon-btn:hover {
+        color: var(--danger);
+        border-color: var(--border-strong);
+      }
+
+      button.primary,
+      button.ghost {
+        font: inherit;
+        font-size: 0.84rem;
+        font-weight: 500;
+        border-radius: 8px;
+        padding: 0.4rem 0.8rem;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      button.primary {
+        color: #fff;
+        background: var(--accent);
+        border: 1px solid var(--accent);
+      }
+
+      button.primary:hover {
+        background: var(--accent-hover);
+      }
+
+      button.ghost {
+        color: var(--text-secondary);
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+      }
+
+      button.ghost:hover {
+        border-color: var(--border-strong);
+        color: var(--text-primary);
+      }
+
+      /* ===== Split: markdown source | preview ===== */
+      #split {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        min-height: 0;
+      }
+
+      #split > section {
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        min-height: 0;
+        min-width: 0;
+      }
+
+      .pane-head {
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        padding: 0.4rem 0.9rem;
+        background: var(--card-header-bg);
+        border-bottom: 1px solid var(--card-border);
+      }
+
+      #body {
+        border: 0;
+        border-right: 1px solid var(--card-border);
+        border-radius: 0;
+        font-family: var(--font-mono);
+        font-size: 0.84rem;
+        line-height: 1.65;
+        padding: 0.9rem;
+        resize: none;
+        height: 100%;
+      }
+
+      #body:focus-visible {
+        outline-offset: -2px;
+      }
+
+      #preview {
+        overflow-y: auto;
+        padding: 1.1rem 1.3rem;
+        background: var(--card-bg);
+      }
+
+      /* prose.css caps the column for reading comfort; in a split pane that
+         leaves a wide gutter, so let it use the width it has. */
+      #preview .prose {
+        max-width: none;
+      }
+
+      #preview .empty {
+        color: var(--text-muted);
+        font-size: 0.86rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="tabs" id="tabs" role="tablist"></div>
+      <span class="file" id="current">new</span>
+      <button class="ghost" id="new">New</button>
+      <button class="ghost" id="toggle-meta" aria-expanded="true">Hide fields</button>
+      <span class="spacer"></span>
+      <span id="status"></span>
+      <button class="primary" id="save">Save</button>
+    </header>
+
+    <main>
+      <div id="list"></div>
+
+      <div id="pane">
+        <div id="meta"></div>
+
+        <div id="split">
+          <section>
+            <div class="pane-head">Markdown</div>
+            <textarea id="body" spellcheck="false" placeholder="## New&#10;&#10;- Something that shipped."></textarea>
+          </section>
+          <section>
+            <div class="pane-head">Preview</div>
+            <div id="preview"><p class="empty">Nothing to preview yet.</p></div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <datalist id="images"></datalist>
+    <datalist id="tags"></datalist>
+
+    <script type="module">
+      import { marked } from '/vendor/marked.esm.js';
+
+      marked.setOptions({ gfm: true, breaks: false });
+
+      const $ = (id) => document.getElementById(id);
+
+      let meta = { collections: [], apps: [], platforms: [], images: [], tags: [], today: '' };
+      let collection = null;
+      let currentFile = null; // null = unsaved new entry
+      let dirty = false;
+
+      const setStatus = (text, kind = '') => {
+        $('status').textContent = text;
+        $('status').className = kind;
+      };
+
+      const touch = () => (dirty = true);
+
+      /* ---------------------------------------------------------- preview */
+
+      function renderPreview() {
+        const md = $('body').value.trim();
+        const el = $('preview');
+        if (!md) {
+          el.innerHTML = '<p class="empty">Nothing to preview yet.</p>';
+          return;
+        }
+        const div = document.createElement('div');
+        div.className = 'prose';
+        // Local tool, own content, no network input - marked's output goes in
+        // as-is so raw HTML in a post previews the way it will render.
+        div.innerHTML = marked.parse(md);
+        el.replaceChildren(div);
+      }
+
+      /* ------------------------------------------------- field rendering */
+
+      /** One <div class="f"> per field, built from the collection's spec. */
+      function buildField(field) {
+        const wrap = document.createElement('div');
+        wrap.className = 'f' + (field.width === 'full' ? ' full' : '');
+        wrap.dataset.field = field.name;
+        wrap.dataset.kind = field.kind;
+
+        const label = document.createElement('label');
+        label.className = 'lbl';
+        label.textContent = field.label ?? field.name.replace(/([A-Z])/g, ' $1');
+        if (field.required) {
+          const req = document.createElement('span');
+          req.className = 'req';
+          req.textContent = '*';
+          label.append(req);
+        }
+        if (field.hint && field.kind !== 'bool') {
+          const hint = document.createElement('span');
+          hint.className = 'hint';
+          hint.textContent = ' - ' + field.hint;
+          label.append(hint);
+        }
+        wrap.append(label);
+
+        const id = `f-${field.name}`;
+
+        switch (field.kind) {
+          case 'app': {
+            const sel = document.createElement('select');
+            sel.id = id;
+            sel.append(new Option(field.required ? 'Pick an app' : '(none)', ''));
+            for (const a of meta.apps) sel.append(new Option(a.name, a.id));
+            sel.addEventListener('change', touch);
+            label.htmlFor = id;
+            wrap.append(sel);
+            break;
+          }
+
+          case 'platforms': {
+            const box = document.createElement('div');
+            box.className = 'toggles';
+            for (const p of meta.platforms) {
+              const l = document.createElement('label');
+              const i = document.createElement('input');
+              i.type = 'checkbox';
+              i.value = p.id;
+              i.addEventListener('change', touch);
+              l.append(i, document.createTextNode(p.label));
+              box.append(l);
+            }
+            wrap.append(box);
+            break;
+          }
+
+          case 'bool': {
+            const l = document.createElement('label');
+            l.className = 'checkline';
+            const i = document.createElement('input');
+            i.type = 'checkbox';
+            i.id = id;
+            i.addEventListener('change', touch);
+            l.append(i, document.createTextNode(field.hint ?? ''));
+            wrap.append(l);
+            break;
+          }
+
+          case 'folded': {
+            const ta = document.createElement('textarea');
+            ta.id = id;
+            ta.rows = field.rows ?? 2;
+            if (field.placeholder) ta.placeholder = field.placeholder;
+            ta.addEventListener('input', touch);
+            label.htmlFor = id;
+            wrap.append(ta);
+            break;
+          }
+
+          case 'date': {
+            const i = document.createElement('input');
+            i.type = 'date';
+            i.id = id;
+            i.addEventListener('input', touch);
+            label.htmlFor = id;
+            wrap.append(i);
+            break;
+          }
+
+          case 'flowlist':
+          case 'blocklist': {
+            const host = document.createElement('div');
+            host.className = 'rows';
+            const add = document.createElement('button');
+            add.type = 'button';
+            add.className = 'ghost';
+            add.textContent = 'Add';
+            add.addEventListener('click', () => addListRow(host, field, '').focus());
+            wrap.append(host, add);
+            break;
+          }
+
+          case 'image': {
+            const i = document.createElement('input');
+            i.type = 'text';
+            i.id = id;
+            i.setAttribute('list', 'images');
+            i.placeholder = '/media/...';
+            i.autocomplete = 'off';
+            i.addEventListener('input', touch);
+            label.htmlFor = id;
+            wrap.append(i);
+            break;
+          }
+
+          default: {
+            const i = document.createElement('input');
+            i.type = 'text';
+            i.id = id;
+            if (field.placeholder) i.placeholder = field.placeholder;
+            i.autocomplete = 'off';
+            i.addEventListener('input', touch);
+            label.htmlFor = id;
+            wrap.append(i);
+          }
+        }
+
+        return wrap;
+      }
+
+      function addListRow(host, field, value) {
+        const row = document.createElement('div');
+        row.className = 'row';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = value;
+        input.autocomplete = 'off';
+        if (field.placeholder) input.placeholder = field.placeholder;
+        if (field.name === 'tags') input.setAttribute('list', 'tags');
+        input.addEventListener('input', touch);
+
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'icon-btn';
+        remove.textContent = 'Remove';
+        remove.addEventListener('click', () => {
+          row.remove();
+          touch();
+        });
+
+        row.append(input, remove);
+        host.append(row);
+        return input;
+      }
+
+      function buildForm() {
+        $('meta').replaceChildren(...collection.fields.map(buildField));
+      }
+
+      /* ------------------------------------------------------- read/write */
+
+      const fieldWrap = (name) => $('meta').querySelector(`[data-field="${name}"]`);
+
+      function readForm() {
+        const data = { body: $('body').value };
+
+        for (const field of collection.fields) {
+          const wrap = fieldWrap(field.name);
+          if (!wrap) continue;
+
+          if (field.kind === 'platforms') {
+            data[field.name] = [...wrap.querySelectorAll('input:checked')].map((i) => i.value);
+          } else if (field.kind === 'flowlist' || field.kind === 'blocklist') {
+            data[field.name] = [...wrap.querySelectorAll('.rows input')].map((i) => i.value.trim()).filter(Boolean);
+          } else if (field.kind === 'bool') {
+            data[field.name] = wrap.querySelector('input').checked;
+          } else {
+            data[field.name] = wrap.querySelector('input, select, textarea').value;
+          }
+        }
+        return data;
+      }
+
+      function fillForm(data = {}, body = '') {
+        for (const field of collection.fields) {
+          const wrap = fieldWrap(field.name);
+          if (!wrap) continue;
+          const value = data[field.name];
+
+          if (field.kind === 'platforms') {
+            const on = new Set(value ?? []);
+            for (const i of wrap.querySelectorAll('input')) i.checked = on.has(i.value);
+          } else if (field.kind === 'flowlist' || field.kind === 'blocklist') {
+            const host = wrap.querySelector('.rows');
+            host.replaceChildren();
+            for (const item of value ?? []) addListRow(host, field, item);
+          } else if (field.kind === 'bool') {
+            wrap.querySelector('input').checked = Boolean(value);
+          } else {
+            const el = wrap.querySelector('input, select, textarea');
+            el.value = value ?? '';
+            if (field.kind === 'date' && field.required && !value) el.value = meta.today;
+          }
+        }
+
+        $('body').value = body ?? '';
+        renderPreview();
+        dirty = false;
+      }
+
+      /* ------------------------------------------------------------ list */
+
+      async function loadList() {
+        const { entries } = await (await fetch(`/api/${collection.id}/entries`)).json();
+        const host = $('list');
+        host.replaceChildren();
+
+        if (entries.length === 0) {
+          const p = document.createElement('p');
+          p.className = 'muted-note';
+          p.textContent = `No ${collection.label.toLowerCase()} entries yet.`;
+          host.append(p);
+          return;
+        }
+
+        for (const e of entries) {
+          const btn = document.createElement('button');
+          btn.className = 'entry' + (e.file === currentFile ? ' is-on' : '');
+
+          const ttl = document.createElement('span');
+          ttl.className = 'ttl';
+          ttl.textContent = e.title || e.file;
+
+          const sub = document.createElement('span');
+          sub.className = 'sub';
+          sub.textContent = e.error
+            ? 'unreadable'
+            : [appName(e.app), e.version && 'v' + e.version, e.date].filter(Boolean).join(' - ');
+
+          btn.append(ttl, sub);
+          if (e.draft) {
+            const flag = document.createElement('span');
+            flag.className = 'flag';
+            flag.textContent = 'draft';
+            sub.append(flag);
+          }
+
+          btn.addEventListener('click', () => open(e.file));
+          host.append(btn);
+        }
+      }
+
+      const appName = (id) => meta.apps.find((a) => a.id === id)?.name ?? id ?? '';
+
+      /* ------------------------------------------------------ open / save */
+
+      const confirmDiscard = () => !dirty || confirm('Discard unsaved changes?');
+
+      async function open(file) {
+        if (!confirmDiscard()) return;
+        const res = await fetch(`/api/${collection.id}/entries/${encodeURIComponent(file)}`);
+        const payload = await res.json();
+        if (!res.ok) return setStatus(payload.error, 'err');
+
+        currentFile = file;
+        $('current').textContent = file;
+        fillForm(payload.data, payload.body);
+        setStatus('');
+        loadList();
+      }
+
+      function newEntry() {
+        if (!confirmDiscard()) return;
+        currentFile = null;
+        $('current').textContent = 'new';
+        fillForm({}, '');
+        setStatus('');
+        loadList();
+      }
+
+      async function save() {
+        const payload = readForm();
+        const url = currentFile
+          ? `/api/${collection.id}/entries/${encodeURIComponent(currentFile)}`
+          : `/api/${collection.id}/entries`;
+
+        const res = await fetch(url, {
+          method: currentFile ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        const result = await res.json();
+        if (!res.ok) return setStatus(result.error, 'err');
+
+        currentFile = result.file;
+        $('current').textContent = result.file;
+        dirty = false;
+
+        setStatus(
+          result.renamedFrom
+            ? `Saved as ${result.file} (was ${result.renamedFrom})`
+            : result.filenameFixed
+              ? `Saved ${result.file} - filename kept so the URL does not change`
+              : `Saved ${result.file}`,
+          'ok',
+        );
+        loadList();
+      }
+
+      /* ------------------------------------------------------ collections */
+
+      async function selectCollection(id) {
+        if (collection && !confirmDiscard()) return;
+        collection = meta.collections.find((c) => c.id === id);
+
+        for (const t of $('tabs').querySelectorAll('.tab')) {
+          t.classList.toggle('is-on', t.dataset.id === id);
+          t.setAttribute('aria-selected', String(t.dataset.id === id));
+        }
+
+        buildForm();
+        currentFile = null;
+        $('current').textContent = 'new';
+        fillForm({}, '');
+        setStatus('');
+        await loadList();
+      }
+
+      /* ------------------------------------------------------------ init */
+
+      async function init() {
+        meta = await (await fetch('/api/meta')).json();
+
+        for (const c of meta.collections) {
+          const t = document.createElement('button');
+          t.className = 'tab';
+          t.textContent = c.label;
+          t.dataset.id = c.id;
+          t.setAttribute('role', 'tab');
+          t.addEventListener('click', () => selectCollection(c.id));
+          $('tabs').append(t);
+        }
+
+        $('images').replaceChildren(...meta.images.map((s) => new Option(s)));
+        $('tags').replaceChildren(...meta.tags.map((s) => new Option(s)));
+
+        $('body').addEventListener('input', () => {
+          touch();
+          renderPreview();
+        });
+
+        $('new').addEventListener('click', newEntry);
+        $('save').addEventListener('click', save);
+
+        $('toggle-meta').addEventListener('click', () => {
+          const hide = !$('meta').hidden;
+          $('meta').hidden = hide;
+          $('toggle-meta').textContent = hide ? 'Show fields' : 'Hide fields';
+          $('toggle-meta').setAttribute('aria-expanded', String(!hide));
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            save();
+          }
+        });
+
+        window.addEventListener('beforeunload', (e) => {
+          if (dirty) e.preventDefault();
+        });
+
+        await selectCollection(meta.collections[0].id);
+      }
+
+      init();
+    </script>
+  </body>
+</html>

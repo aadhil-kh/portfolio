@@ -1,0 +1,194 @@
+---
+/**
+ * The media half of a list row.
+ *
+ * Given an `image`, renders it. Given none, draws a generated SVG card from
+ * the app name plus version (or post title) tinted with the app's accent, so
+ * a release with no screenshot still looks deliberate rather than empty.
+ */
+export interface Props {
+  image?: string;
+  imageAlt?: string;
+  /** Small label above the heading - app name, or a tag. */
+  eyebrow: string;
+  /** The large line - "v9.0.1", or a post title. */
+  heading: string;
+  /** Small label below - platform list, or a date. */
+  sub?: string;
+  accent: string;
+  /** Unique within the page; keeps the gradient/pattern ids from colliding. */
+  uid: string;
+  loading?: 'lazy' | 'eager';
+}
+
+const {
+  image,
+  imageAlt,
+  eyebrow,
+  heading,
+  sub,
+  accent,
+  uid,
+  loading = 'lazy',
+} = Astro.props;
+
+const gradId = `ca-grad-${uid}`;
+const dotId = `ca-dots-${uid}`;
+
+/* ---- Text layout -------------------------------------------------------
+   SVG <text> does not wrap, so a long heading would run straight off the
+   card. Lines are measured here at build time instead.                  */
+
+const VIEW_W = 640;
+const VIEW_H = 400;
+const PAD_X = 48;
+const INNER_W = VIEW_W - PAD_X * 2; // 544
+
+// Inter's average advance is roughly 0.54em across mixed-case text. That is
+// an estimate, not a metric - the 3-line cap and the ellipsis keep an
+// underestimate from overflowing rather than relying on it being exact.
+const CHAR_RATIO = 0.54;
+const MAX_LINES = 3;
+
+function pickFontSize(text: string): number {
+  if (text.length <= 14) return 56;
+  if (text.length <= 22) return 44;
+  if (text.length <= 44) return 34;
+  return 28;
+}
+
+function wrap(text: string, fontSize: number): string[] {
+  const maxChars = Math.max(8, Math.floor(INNER_W / (CHAR_RATIO * fontSize)));
+  const words = text.split(/\s+/).filter(Boolean);
+  const lines: string[] = [];
+  let line = '';
+
+  for (const word of words) {
+    const candidate = line ? `${line} ${word}` : word;
+    if (candidate.length <= maxChars) {
+      line = candidate;
+      continue;
+    }
+    if (line) lines.push(line);
+    // A single word longer than the line gets hard-broken.
+    if (word.length > maxChars) {
+      let rest = word;
+      while (rest.length > maxChars) {
+        lines.push(rest.slice(0, maxChars - 1) + '-');
+        rest = rest.slice(maxChars - 1);
+      }
+      line = rest;
+    } else {
+      line = word;
+    }
+  }
+  if (line) lines.push(line);
+
+  if (lines.length > MAX_LINES) {
+    const kept = lines.slice(0, MAX_LINES);
+    kept[MAX_LINES - 1] = kept[MAX_LINES - 1].replace(/.{1}$/, '') + '...';
+    return kept;
+  }
+  return lines;
+}
+
+const headingSize = pickFontSize(heading);
+const headingLines = wrap(heading, headingSize);
+const lineHeight = Math.round(headingSize * 1.14);
+
+// The card is drawn with preserveAspectRatio "slice", so a container that is
+// wider than 16:10 crops the top and bottom. Centring the whole text block on
+// the vertical midpoint keeps it inside the visible band at any row height.
+const EYEBROW_H = 19;
+const EYEBROW_GAP = 26;
+const SUB_GAP = 26;
+const SUB_H = 18;
+const RULE_GAP = 22;
+const RULE_H = 4;
+
+const blockH =
+  RULE_H + RULE_GAP + EYEBROW_H + EYEBROW_GAP + headingLines.length * lineHeight + (sub ? SUB_GAP + SUB_H : 0);
+
+const blockTop = Math.round(VIEW_H / 2 - blockH / 2);
+
+const ruleY = blockTop;
+const eyebrowBaseline = ruleY + RULE_H + RULE_GAP + EYEBROW_H;
+const headingFirstBaseline = eyebrowBaseline + EYEBROW_GAP + Math.round(headingSize * 0.78);
+const subBaseline = headingFirstBaseline + (headingLines.length - 1) * lineHeight + SUB_GAP + SUB_H;
+---
+
+{
+  image ? (
+    <img
+      class="card-art-img"
+      src={image}
+      alt={imageAlt ?? `${eyebrow} ${heading}`}
+      loading={loading}
+      decoding="async"
+    />
+  ) : (
+    <svg
+      class="card-art-svg"
+      viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+      role="img"
+      aria-label={`${eyebrow} ${heading}`}
+      preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id={gradId} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color={accent} stop-opacity="0.18" />
+          <stop offset="100%" stop-color={accent} stop-opacity="0.04" />
+        </linearGradient>
+        <pattern id={dotId} width="22" height="22" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1.1" fill={accent} opacity="0.17" />
+        </pattern>
+      </defs>
+
+      <rect width={VIEW_W} height={VIEW_H} fill="#ffffff" />
+      <rect width={VIEW_W} height={VIEW_H} fill={`url(#${dotId})`} />
+      <rect width={VIEW_W} height={VIEW_H} fill={`url(#${gradId})`} />
+
+      <rect x={PAD_X} y={ruleY} width="54" height={RULE_H} rx="2" fill={accent} />
+
+      <text
+        x={PAD_X}
+        y={eyebrowBaseline}
+        font-family="Inter, system-ui, sans-serif"
+        font-size={EYEBROW_H}
+        font-weight="600"
+        letter-spacing="1.6"
+        fill={accent}
+        opacity="0.95">
+        {eyebrow.toUpperCase()}
+      </text>
+
+      {
+        headingLines.map((line, i) => (
+          <text
+            x={PAD_X}
+            y={headingFirstBaseline + i * lineHeight}
+            font-family="Inter, system-ui, sans-serif"
+            font-size={headingSize}
+            font-weight="600"
+            letter-spacing="-1.2"
+            fill="#18181b">
+            {line}
+          </text>
+        ))
+      }
+
+      {
+        sub && (
+          <text
+            x={PAD_X}
+            y={subBaseline}
+            font-family="Inter, system-ui, sans-serif"
+            font-size={SUB_H}
+            font-weight="400"
+            fill="#71717a">
+            {sub}
+          </text>
+        )
+      }
+    </svg>
+  )
+}

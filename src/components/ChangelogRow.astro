@@ -1,0 +1,124 @@
+---
+import CardArtwork from './CardArtwork.astro';
+import PlatformBadge from './PlatformBadge.astro';
+import { getApp } from '../data/apps';
+import { platformLabel, sortPlatforms } from '../data/platforms';
+
+export interface Props {
+  slug: string;
+  entry: {
+    id: string;
+    data: {
+      app: string;
+      version: string;
+      date: Date;
+      platforms: string[];
+      title?: string;
+      summary?: string;
+      image?: string;
+      imageAlt?: string;
+      highlights: string[];
+      downloadUrl?: string;
+    };
+  };
+}
+
+const { entry, slug } = Astro.props;
+const d = entry.data;
+
+const app = getApp(d.app);
+const name = app?.name ?? d.app;
+const accent = app?.accent ?? '#2563eb';
+const platforms = sortPlatforms(d.platforms);
+
+const href = `/changelog/${slug}`;
+const heading = d.title ?? `${name} ${d.version}`;
+const isoDate = d.date.toISOString().slice(0, 10);
+const prettyDate = d.date.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+});
+---
+
+{/*
+  The whole row is one click target. Only the title is a real link - its
+  ::after covers the card - so a screen reader hears one destination per row
+  rather than three identical ones. The download, which goes somewhere else,
+  sits above that overlay.
+*/}
+<article class="cl-row" data-app={d.app} data-platforms={platforms.join(' ')} data-date={isoDate}>
+  <div class="cl-row-media">
+    <CardArtwork
+      image={d.image}
+      imageAlt={d.imageAlt}
+      eyebrow={name}
+      heading={`v${d.version}`}
+      sub={platforms.map(platformLabel).join(' / ')}
+      accent={accent}
+      uid={slug.replace(/[^a-z0-9]+/gi, '-')}
+    />
+  </div>
+
+  <div class="cl-row-body">
+    <div class="cl-row-meta">
+      {
+        app?.icon && (
+          <span class:list={['cl-app-icon', { borderless: app.borderlessIcon }]}>
+            <img src={app.icon} alt="" loading="lazy" />
+          </span>
+        )
+      }
+      <span class="cl-app-name">{name}</span>
+      <span class="cl-version">v{d.version}</span>
+      <span class="cl-dot" aria-hidden="true">&middot;</span>
+      <time class="cl-date" datetime={isoDate}>{prettyDate}</time>
+    </div>
+
+    <h3 class="cl-row-title">
+      <a href={href} class="cl-row-link">{heading}</a>
+    </h3>
+
+    {d.summary && <p class="cl-row-summary">{d.summary}</p>}
+
+    {
+      d.highlights.length > 0 && (
+        <ul class="cl-highlights">
+          {d.highlights.slice(0, 4).map((h) => (
+            <li>{h}</li>
+          ))}
+        </ul>
+      )
+    }
+
+    <div class="cl-row-footer">
+      <div class="cl-platforms">
+        {platforms.map((p) => <PlatformBadge platform={p} />)}
+      </div>
+      <div class="cl-row-links">
+        <span class="cl-read-more" aria-hidden="true">
+          Full notes
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg
+          >
+        </span>
+        {
+          d.downloadUrl && (
+            <a
+              href={d.downloadUrl}
+              class="cl-download cl-row-above"
+              target="_blank"
+              rel="noopener">
+              Download
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</article>

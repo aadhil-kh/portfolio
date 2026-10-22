@@ -1,0 +1,632 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteNav from '../components/SiteNav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileNav from '../components/MobileNav.astro';
+import type { MobileNavItem } from '../components/MobileNav.astro';
+import AppCard from '../components/AppCard.astro';
+import ScreenshotCarousel from '../components/ScreenshotCarousel.astro';
+import { LISTED_APPS } from '../data/apps';
+
+// Which apps have published releases, so their card can link to the changelog.
+const releases = (await getCollection('changelog')).filter(
+  (e) => import.meta.env.DEV || !e.data.draft,
+);
+const appsWithReleases = new Set(releases.map((e) => e.data.app));
+
+const mobileItems: MobileNavItem[] = [
+  { href: '#profile', label: 'Home', icon: 'home', section: 'profile', active: true },
+  { href: '#services', label: 'Services', icon: 'services', section: 'services' },
+  { href: '#apps', label: 'Apps', icon: 'apps', section: 'apps' },
+  { href: '#experience', label: 'Work', icon: 'work', section: 'experience' },
+  { href: '#contact', label: 'Contact', icon: 'contact', section: 'contact' },
+];
+---
+
+<BaseLayout
+  title="Mohammed Aadhil - Freelance App Developer & Zoho CRM Consultant"
+  description="Freelance web and app developer and Zoho CRM / Zoho One consultant. Seven years leading the Zoho CRM developer platform."
+  suffixTitle={false}>
+  <SiteNav variant="home" />
+
+  <div class="container">
+    <!-- ===== PROFILE ===== -->
+    <section class="hero" id="profile">
+      <div class="hero-text">
+        <h1 class="hero-headline">Freelance software developer and Zoho CRM consultant.</h1>
+        <p class="hero-sub">
+          I'm Mohammed Aadhil. I spent seven years leading the Zoho CRM developer platform at
+          Zoho. Today I build web and desktop apps, and help businesses set up, customize, and
+          integrate Zoho CRM and Zoho One.
+        </p>
+        <div class="hero-actions">
+          <a
+            href="mailto:me@aadhil.dev?subject=Call%20request"
+            class="btn btn-primary"
+            data-book-call="intro-call">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><rect x="3" y="4" width="18" height="18" rx="2"></rect><line
+                x1="16"
+                y1="2"
+                x2="16"
+                y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line
+                x1="3"
+                y1="10"
+                x2="21"
+                y2="10"></line></svg
+            >
+            Book a free 30-min call
+          </a>
+          <a href="mailto:me@aadhil.dev" class="btn btn-secondary">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m2 7 10 7 10-7"
+              ></path></svg
+            >
+            me@aadhil.dev
+          </a>
+        </div>
+      </div>
+      <div class="hero-aside">
+        <img src="/media/images/mascot.jpg" alt="Mohammed Aadhil" class="profile-avatar" />
+        <div class="hero-socials">
+          <a
+            href="https://x.com/aadhilkh"
+            target="_blank"
+            rel="noopener"
+            class="hero-social"
+            title="X"
+            aria-label="X">
+            <img src="/media/images/x-logo.svg" alt="" />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/aadhilkh"
+            target="_blank"
+            rel="noopener"
+            class="hero-social"
+            title="LinkedIn"
+            aria-label="LinkedIn">
+            <img src="/media/images/linkedin-logo.svg" alt="" />
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div class="stats">
+      <a href="#experience" class="stat">
+        <span class="stat-value" data-total-years>10+</span>
+        <span class="stat-label">Years building software</span>
+      </a>
+      <a href="#apps" class="stat">
+        <span class="stat-value">10+</span>
+        <span class="stat-label">Apps across iOS, Windows and Mac</span>
+      </a>
+      <a href="#experience" class="stat">
+        <span class="stat-value">7</span>
+        <span class="stat-label">Years as Zoho CRM platform lead</span>
+      </a>
+    </div>
+
+    <main>
+      <!-- ===== SERVICES ===== -->
+      <section class="section" id="services">
+        <div class="section-head">
+          <h2 class="section-title">Services</h2>
+          <p class="section-desc">
+            Tell me what you need and we'll work out whether I'm the right fit.
+          </p>
+        </div>
+        <div class="services-grid">
+          <article class="service-card">
+            <div class="service-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><rect x="2" y="3" width="20" height="14" rx="2"></rect><line
+                  x1="8"
+                  y1="21"
+                  x2="16"
+                  y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line><polyline
+                  points="9 8 7 10 9 12"></polyline><polyline points="15 8 17 10 15 12"
+                ></polyline></svg
+              >
+            </div>
+            <h3 class="service-title">Web and app building</h3>
+            <p class="service-desc">
+              Websites, web apps, and native desktop and mobile apps, from first sketch to store
+              listing.
+            </p>
+            <ul class="service-list">
+              <li>Websites and web apps</li>
+              <li>Windows, macOS, and iOS apps</li>
+              <li>Store submission and launch</li>
+            </ul>
+            <div class="service-actions">
+              <a
+                href="mailto:me@aadhil.dev?subject=Project%20enquiry%3A%20web%20%2F%20app%20building"
+                class="btn btn-primary">Discuss a project</a
+              >
+              <a
+                href="mailto:me@aadhil.dev?subject=Call%20request%3A%20web%20%2F%20app%20building"
+                class="text-link"
+                data-book-call="intro-call">or book a call</a
+              >
+            </div>
+          </article>
+          <article class="service-card">
+            <div class="service-icon service-icon-brand">
+              <img src="/media/images/zoho.svg" alt="Zoho" />
+            </div>
+            <h3 class="service-title">Zoho CRM / Zoho One consultancy</h3>
+            <p class="service-desc">
+              Get Zoho set up, customized, and connected to the rest of your stack, by someone who
+              built its developer platform.
+            </p>
+            <ul class="service-list">
+              <li>Setup, migration, and customization</li>
+              <li>Client scripts, widgets, and functions</li>
+              <li>Integrations and automation</li>
+            </ul>
+            <div class="service-actions">
+              <a
+                href="mailto:me@aadhil.dev?subject=Zoho%20CRM%20audit%20request"
+                class="btn btn-primary"
+                data-book-call="zoho-audit">Book a free CRM audit</a
+              >
+              <a
+                href="mailto:me@aadhil.dev?subject=Zoho%20CRM%20%2F%20Zoho%20One%20enquiry"
+                class="text-link">or email me</a
+              >
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ===== SIDE PROJECTS ===== -->
+      <section class="section" id="apps">
+        <div class="section-head">
+          <h2 class="section-title">Apps I've shipped</h2>
+          <p class="section-desc">
+            My own products, designed, built, and published end to end.
+            {
+              releases.length > 0 && (
+                <>
+                  {' '}
+                  <a href="/changelog" class="text-link">
+                    See the changelog
+                  </a>
+                  .
+                </>
+              )
+            }
+          </p>
+        </div>
+        <div class="section-card">
+          <div class="apps-list" id="apps-list">
+            {
+              LISTED_APPS.map((app) => (
+                <AppCard app={app} hasReleases={appsWithReleases.has(app.id)} />
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== EXPERIENCE ===== -->
+      <section class="section" id="experience">
+        <div class="section-head">
+          <h2 class="section-title">Experience</h2>
+          <p class="section-desc">
+            <span data-total-exp>10+ years</span> in software &middot; <span class="nowrap"
+              >ex-Zoho, ex-TCS</span
+            >
+          </p>
+        </div>
+        <div class="section-card exp-card">
+          <article class="exp-item">
+            <div class="exp-logo exp-logo-plain">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><rect x="2" y="7" width="20" height="14" rx="2"></rect><path
+                  d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path></svg
+              >
+            </div>
+            <div class="exp-body">
+              <div class="exp-head">
+                <div>
+                  <h3 class="exp-role">Independent Consultant</h3>
+                  <p class="exp-company">Self-employed &middot; Chennai, India</p>
+                </div>
+                <div class="exp-meta">
+                  <span class="exp-dates">Jun 2026 &ndash; Present</span>
+                  <span class="exp-duration" data-from="2026-06" data-to=""></span>
+                </div>
+              </div>
+              <ul class="exp-list">
+                <li>Build web, desktop, and mobile apps, from scoping through store release.</li>
+                <li>Set up, customize, and integrate Zoho CRM and Zoho One for businesses.</li>
+                <li>
+                  Publish and maintain my own apps on the Microsoft Store, App Store, and Flathub.
+                </li>
+              </ul>
+            </div>
+          </article>
+          <article class="exp-item">
+            <div class="exp-logo"><img src="/media/images/zoho.svg" alt="Zoho" /></div>
+            <div class="exp-body">
+              <div class="exp-head">
+                <div>
+                  <h3 class="exp-role">Product Lead, Developer Platform</h3>
+                  <p class="exp-company">
+                    Zoho Corporation &middot; Member Leadership Staff &middot; Chennai, India
+                  </p>
+                </div>
+                <div class="exp-meta">
+                  <span class="exp-dates">Jul 2019 &ndash; Jun 2026</span>
+                  <span class="exp-duration" data-from="2019-07" data-to="2026-06"></span>
+                </div>
+              </div>
+              <ul class="exp-list">
+                <li>
+                  Led the Zoho CRM developer platform: client-side scripting, serverless functions
+                  (FaaS), and embeddable UI widgets.
+                </li>
+                <li>
+                  Drove developer-experience work across SDKs, tooling, and APIs, shipping the
+                  Client Script and Widget SDKs and developer tools used by thousands of builders.
+                </li>
+                <li>
+                  Defined a unified SDK, documentation, and client-platform strategy for consistency
+                  across developer surfaces.
+                </li>
+                <li>
+                  Worked with Product, Engineering, Design, Marketing, and Support on
+                  developer-facing initiatives.
+                </li>
+                <li>Ran technical workshops and enablement programs for developers and partners.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="exp-item">
+            <div class="exp-logo tcs-logo">
+              <svg viewBox="0 0 24 24" fill="currentColor"
+                ><path
+                  d="M9.774 11.568c.193-1.322.168-2.013-1.768-1.906-2.223.124-4.476.265-7.849 1.027A5.63 5.63 0 0 0 0 12c0 1.52.618 2.99 1.787 4.254 1.06 1.144 2.556 2.095 4.326 2.752a15.48 15.48 0 0 0 2.014.588c.13-.527.959-3.907 1.616-7.823l.03-.202m14.07-.88c-3.372-.762-5.624-.902-7.846-1.026-1.937-.107-1.962.584-1.768 1.906l.046.298c.65 3.848 1.458 7.16 1.598 7.72C20.595 18.508 24 15.516 24 12c0-.443-.054-.88-.157-1.311m-.491-1.324a7.163 7.163 0 0 0-1.14-1.618c-1.06-1.144-2.555-2.095-4.325-2.752-1.784-.662-3.82-1.011-5.887-1.011-2.068 0-4.103.35-5.887 1.01-1.77.658-3.266 1.61-4.326 2.753A7.17 7.17 0 0 0 .648 9.366c2.304-.557 6.245-1.293 9.904-1.37.353-.008.596.105.756.307.196.248.18 1.128.175 1.522l-.104 10.18a18.507 18.507 0 0 0 1.244 0l-.104-10.18c-.005-.394-.02-1.274.175-1.522.16-.202.403-.315.756-.308 3.658.078 7.597.813 9.902 1.37z"
+                ></path></svg
+              >
+            </div>
+            <div class="exp-body">
+              <div class="exp-head">
+                <div>
+                  <h3 class="exp-role">Systems Engineer</h3>
+                  <p class="exp-company">Tata Consultancy Services &middot; Chennai, India</p>
+                </div>
+                <div class="exp-meta">
+                  <span class="exp-dates">Jun 2018 &ndash; Jul 2019</span>
+                  <span class="exp-duration" data-from="2018-06" data-to="2019-07"></span>
+                </div>
+              </div>
+              <ul class="exp-list">
+                <li>
+                  Moved a product-data integration pipeline from batch to real-time event processing
+                  with Apache Kafka, NiFi, and Confluent.
+                </li>
+                <li>
+                  Extended and customized SAP Hybris core functionality for dynamic product and
+                  integration requirements.
+                </li>
+                <li>Built backend integrations for enterprise product-data workflows.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="exp-item">
+            <div class="exp-logo exp-logo-plain">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"
+                ></polyline></svg
+              >
+            </div>
+            <div class="exp-body">
+              <div class="exp-head">
+                <div>
+                  <h3 class="exp-role">Freelance Software Developer</h3>
+                  <p class="exp-company">Self-employed &middot; Chennai, India</p>
+                </div>
+                <div class="exp-meta">
+                  <span class="exp-dates">Jun 2016 &ndash; Jun 2018</span>
+                  <span class="exp-duration" data-from="2016-06" data-to="2018-06"></span>
+                </div>
+              </div>
+              <ul class="exp-list">
+                <li>
+                  Architected a high-scale SaaS platform with Node.js (Express), Angular,
+                  PostgreSQL, Redis, Socket.IO, and BullMQ.
+                </li>
+                <li>Built a pharmacy management system in WinForms with invoicing and inventory.</li>
+                <li>Built a university portal in PHP, Bootstrap, and jQuery for attendance and timetables.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ===== SKILLS ===== -->
+      <section class="section" id="skills">
+        <div class="section-head">
+          <h2 class="section-title">Skills</h2>
+          <p class="section-desc">What I bring to a project.</p>
+        </div>
+        <div class="skills-grid">
+          <article class="service-card skill-card">
+            <div class="service-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M12 8V4H8"></path><rect x="4" y="8" width="16" height="12" rx="2"
+                ></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"
+                ></path><path d="M9 13v2"></path></svg
+              >
+            </div>
+            <h3 class="service-title">AI agents and RAG</h3>
+            <ul class="service-list">
+              <li>LLM agents with tool calling</li>
+              <li>MCP servers and integrations</li>
+              <li>Retrieval-augmented generation (RAG)</li>
+              <li>Embeddings and vector search</li>
+              <li>Prompt design and evaluation</li>
+            </ul>
+          </article>
+          <article class="service-card skill-card">
+            <div class="service-icon service-icon-brand">
+              <img src="/media/images/zoho.svg" alt="Zoho" />
+            </div>
+            <h3 class="service-title">Zoho CRM and Zoho One</h3>
+            <ul class="service-list">
+              <li>Setup, customization, and migration</li>
+              <li>Deluge and serverless functions</li>
+              <li>Client scripts and widgets</li>
+              <li>Zoho APIs and third-party integrations</li>
+              <li>Workflow automation</li>
+            </ul>
+          </article>
+          <article class="service-card skill-card">
+            <div class="service-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="M2 8h20"
+                ></path><path d="M6 4v4"></path><path d="M10 4v4"></path></svg
+              >
+            </div>
+            <h3 class="service-title">Web and app development</h3>
+            <ul class="service-list">
+              <li>TypeScript, JavaScript, React</li>
+              <li>C# / .NET and WinUI 3</li>
+              <li>Swift and SwiftUI</li>
+              <li>Dart and Flutter</li>
+              <li>Microsoft Store and App Store releases</li>
+            </ul>
+          </article>
+          <article class="service-card skill-card">
+            <div class="service-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M12 12c-4.418 0-8-1.79-8-4s3.582-4 8-4 8 1.79 8 4-3.582 4-8 4Z"></path><path
+                  d="M4 8v10c0 2.21 3.582 4 8 4s8-1.79 8-4V8"></path><path
+                  d="M4 13c0 2.21 3.582 4 8 4s8-1.79 8-4"></path></svg
+              >
+            </div>
+            <h3 class="service-title">Backend and integrations</h3>
+            <ul class="service-list">
+              <li>Node.js, Python, Java</li>
+              <li>REST API design</li>
+              <li>PostgreSQL and Redis</li>
+              <li>Event streaming with Kafka</li>
+              <li>Serverless architecture</li>
+            </ul>
+          </article>
+          <article class="service-card skill-card">
+            <div class="service-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+                ></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line
+                  x1="12"
+                  y1="22.08"
+                  x2="12"
+                  y2="12"></line></svg
+              >
+            </div>
+            <h3 class="service-title">Developer platforms</h3>
+            <ul class="service-list">
+              <li>SDK and API design</li>
+              <li>Platform extensibility</li>
+              <li>Developer tooling and CLIs</li>
+              <li>Embeddable widgets</li>
+              <li>Developer documentation</li>
+            </ul>
+          </article>
+          <article class="service-card skill-card">
+            <div class="service-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle
+                  cx="9"
+                  cy="7"
+                  r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path
+                  d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg
+              >
+            </div>
+            <h3 class="service-title">Leadership and delivery</h3>
+            <ul class="service-list">
+              <li>Technical leadership</li>
+              <li>Project planning and delivery</li>
+              <li>Workshops and team enablement</li>
+              <li>Cross-functional collaboration</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <!-- ===== CONTACT ===== -->
+      <section class="section contact-cta" id="contact">
+        <div class="section-card">
+          <h2 class="section-title">Have a project in mind?</h2>
+          <p class="section-desc">Book a call to talk it through, or email me the details.</p>
+          <div class="hero-actions">
+            <a
+              href="mailto:me@aadhil.dev?subject=Call%20request"
+              class="btn btn-primary"
+              data-book-call="intro-call">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><rect x="3" y="4" width="18" height="18" rx="2"></rect><line
+                  x1="16"
+                  y1="2"
+                  x2="16"
+                  y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line
+                  x1="3"
+                  y1="10"
+                  x2="21"
+                  y2="10"></line></svg
+              >
+              Book a call
+            </a>
+            <a href="mailto:me@aadhil.dev" class="btn btn-secondary">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m2 7 10 7 10-7"
+                ></path></svg
+              >
+              me@aadhil.dev
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <SiteFooter />
+  </div>
+
+  <MobileNav items={mobileItems} />
+  <ScreenshotCarousel apps={LISTED_APPS} />
+
+  <script>
+    // --- Experience durations ---
+    // Each .exp-duration carries data-from / data-to as YYYY-MM (data-to empty
+    // means present). Months are counted inclusively, the way LinkedIn does,
+    // and overlapping roles are only counted once in the total.
+    (function () {
+      const now = new Date();
+      const toIndex = (s: string | undefined) => {
+        if (!s) return now.getFullYear() * 12 + now.getMonth();
+        const [y, m] = s.split('-').map(Number);
+        return y * 12 + (m - 1);
+      };
+      const plural = (n: number, unit: string) => `${n} ${unit}${n === 1 ? '' : 's'}`;
+      const format = (months: number) => {
+        const y = Math.floor(months / 12),
+          m = months % 12;
+        return [y && plural(y, 'yr'), m && plural(m, 'mo')].filter(Boolean).join(' ') || '1 mo';
+      };
+
+      const worked = new Set<number>();
+      document.querySelectorAll<HTMLElement>('.exp-duration').forEach((el) => {
+        const from = toIndex(el.dataset.from),
+          to = toIndex(el.dataset.to);
+        for (let i = from; i <= to; i++) worked.add(i);
+        el.textContent = format(to - from + 1);
+      });
+
+      const years = Math.floor(worked.size / 12);
+      document
+        .querySelectorAll('[data-total-exp]')
+        .forEach((el) => (el.textContent = `${format(worked.size)} total`));
+      document
+        .querySelectorAll('[data-total-years]')
+        .forEach((el) => (el.textContent = `${years}+`));
+    })();
+
+    // --- Mobile nav active state via IntersectionObserver ---
+    const navItems = document.querySelectorAll('.mobile-nav-item');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            navItems.forEach((i) => i.classList.remove('active'));
+            const active = document.querySelector(
+              `.mobile-nav-item[data-section="${entry.target.id}"]`,
+            );
+            if (active) active.classList.add('active');
+          }
+        });
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+
+    ['profile', 'services', 'apps', 'experience', 'contact'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,94 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import PageLayout from '../../layouts/PageLayout.astro';
+import { getApp } from '../../data/apps';
+import '../../styles/changelog.css';
+import '../../styles/prose.css';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts
+    .filter((p) => import.meta.env.DEV || !p.data.draft)
+    .map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props as { entry: CollectionEntry<'blog'> };
+const d = entry.data;
+const { Content } = await render(entry);
+
+const app = d.app ? getApp(d.app) : undefined;
+
+const isoDate = d.date.toISOString().slice(0, 10);
+const prettyDate = d.date.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+const prettyUpdated = d.updated?.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<PageLayout title={d.title} description={d.description} ogImage={d.image} active="blog">
+  <article class="section post">
+    <nav class="cl-breadcrumb" aria-label="Breadcrumb">
+      <a href="/blog">Blog</a>
+      <span aria-hidden="true">/</span>
+      <span>{d.title}</span>
+    </nav>
+
+    <header class="post-head">
+      <p class="post-meta">
+        <time datetime={isoDate}>{prettyDate}</time>
+        {
+          prettyUpdated && (
+            <>
+              <span class="cl-dot" aria-hidden="true">
+                &middot;
+              </span>
+              <span>Updated {prettyUpdated}</span>
+            </>
+          )
+        }
+      </p>
+      <h1 class="post-title">{d.title}</h1>
+      <p class="post-desc">{d.description}</p>
+      {
+        d.tags.length > 0 && (
+          <div class="cl-tags">
+            {d.tags.map((t) => (
+              <span class="cl-tag">{t}</span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    {
+      d.image && (
+        <div class="post-cover">
+          <img src={d.image} alt={d.imageAlt ?? ''} />
+        </div>
+      )
+    }
+
+    <div class="section-card post-body">
+      <div class="prose">
+        <Content />
+      </div>
+
+      <div class="cl-detail-actions">
+        {
+          app && (
+            <a href={`/changelog?app=${app.id}`} class="btn btn-secondary">
+              {app.name} releases
+            </a>
+          )
+        }
+        <a href="/blog" class="btn btn-secondary">All posts</a>
+      </div>
+    </div>
+  </article>
+</PageLayout>

@@ -1,0 +1,665 @@
+/* ============================================================
+   Changelog + blog list rows, filters, and detail pages.
+   Built on the tokens in global.css so these pages stay in step
+   with the rest of the site.
+   ============================================================ */
+
+/* ===== Filter bar =====
+   One row: three selects, a live count, and a clear link. Chips grew a row per
+   facet and cost ~180px before a single release was visible; selects stay at
+   one line however many apps ship. */
+.cl-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 0.6rem 0.7rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 2px var(--shadow);
+}
+
+.cl-field {
+    position: relative;
+    display: inline-flex;
+    min-width: 0;
+}
+
+/* Chevron. Drawn from borders rather than a background image so it inherits
+   the theme's muted colour without a second asset per theme. */
+.cl-field::after {
+    content: '';
+    position: absolute;
+    right: 0.7rem;
+    top: 50%;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-right: 1.6px solid var(--text-muted);
+    border-bottom: 1.6px solid var(--text-muted);
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+}
+
+.cl-select {
+    appearance: none;
+    -webkit-appearance: none;
+    font-family: inherit;
+    font-size: 0.86rem;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--text-secondary);
+    background: var(--card-header-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 9px;
+    padding: 0.46rem 2rem 0.46rem 0.72rem;
+    max-width: 100%;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.cl-select:hover {
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+}
+
+.cl-select:focus-visible,
+.cl-clear:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* A select holding anything but its default reads as an applied filter. */
+.cl-select[data-active='true'] {
+    color: var(--accent-hover);
+    background: var(--accent-soft);
+    border-color: color-mix(in srgb, var(--accent) 38%, transparent);
+}
+
+.cl-count {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+.cl-clear {
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--accent);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    white-space: nowrap;
+}
+
+.cl-clear:hover {
+    color: var(--accent-hover);
+}
+
+.cl-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ===== List rows ===== */
+.cl-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.cl-row {
+    display: grid;
+    position: relative;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px var(--shadow);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.cl-row:hover {
+    border-color: var(--border-strong);
+    box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.14);
+}
+
+/* `display: grid` above outranks the user-agent sheet's `[hidden]` rule, so
+   hiding a filtered-out row needs saying here explicitly. */
+.cl-row[hidden] {
+    display: none;
+}
+
+/* Whole-row click target. One link per row stays in the accessibility tree -
+   the title - and its overlay covers the card. Anything that must stay
+   separately clickable (a download) is lifted above the overlay. */
+.cl-row-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+}
+
+.cl-row-above {
+    position: relative;
+    z-index: 2;
+}
+
+.cl-row-media {
+    background: var(--card-header-bg);
+    border-right: 1px solid var(--card-border);
+    min-width: 0;
+}
+
+.cl-row-media .card-art-img,
+.cl-row-media .card-art-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 212px;
+    max-height: 300px;
+    object-fit: cover;
+    object-position: top center;
+}
+
+.cl-row-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.45rem 1.6rem;
+    min-width: 0;
+}
+
+/* ===== Row meta line ===== */
+.cl-row-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.cl-app-icon {
+    width: 22px;
+    height: 22px;
+    flex: none;
+    border-radius: 5px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+}
+
+.cl-app-icon.borderless {
+    border-color: transparent;
+    background: none;
+}
+
+.cl-app-icon.lg {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+}
+
+.cl-app-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.cl-app-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.cl-version {
+    font-size: 0.76rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent-hover);
+    background: var(--accent-soft);
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+    border-radius: 6px;
+    padding: 0.1rem 0.4rem;
+}
+
+.cl-version.lg {
+    font-size: 0.86rem;
+    padding: 0.26rem 0.6rem;
+}
+
+.cl-dot {
+    color: var(--border-strong);
+}
+
+.cl-date {
+    font-variant-numeric: tabular-nums;
+}
+
+/* ===== Row text ===== */
+.cl-row-title {
+    font-family: var(--font-serif);
+    font-size: 1.32rem;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+}
+
+.cl-row-title a {
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.cl-row-title a:hover {
+    color: var(--accent);
+}
+
+.cl-row-summary {
+    font-size: 0.93rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.cl-highlights {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-top: 0.1rem;
+}
+
+.cl-highlights li {
+    position: relative;
+    padding-left: 1.05rem;
+    font-size: 0.89rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+}
+
+.cl-highlights li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.58em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.55;
+}
+
+.cl-highlights.lg li {
+    font-size: 0.95rem;
+}
+
+/* ===== Row footer ===== */
+.cl-row-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: auto;
+    padding-top: 0.85rem;
+}
+
+.cl-platforms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.cl-row-links {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-left: auto;
+}
+
+.cl-read-more,
+.cl-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.18rem;
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.cl-read-more svg {
+    width: 15px;
+    height: 15px;
+    transition: transform 0.15s ease;
+}
+
+.cl-download:hover {
+    color: var(--accent-hover);
+}
+
+.cl-row:hover .cl-read-more svg {
+    transform: translateX(2px);
+}
+
+.cl-download {
+    color: var(--success);
+}
+
+.cl-download:hover {
+    color: color-mix(in srgb, var(--success) 80%, #000);
+}
+
+/* ===== Platform badge ===== */
+.platform-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--text-secondary);
+    background: var(--card-header-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    padding: 0.26rem 0.48rem;
+    white-space: nowrap;
+}
+
+.platform-badge svg {
+    width: 13px;
+    height: 13px;
+    flex: none;
+}
+
+.platform-badge-icon {
+    background: none;
+    border: 0;
+    padding: 0;
+    border-radius: 0;
+}
+
+/* ===== Tags ===== */
+.cl-tags {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.cl-tag {
+    font-size: 0.73rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: var(--card-header-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    padding: 0.16rem 0.5rem;
+}
+
+/* ===== Empty states ===== */
+.cl-empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+}
+
+.cl-empty-state h2 {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.cl-empty-state p {
+    color: var(--text-muted);
+    font-size: 0.93rem;
+}
+
+.cl-empty-state code,
+.cl-source-note code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.86em;
+    background: var(--card-header-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 5px;
+    padding: 0.08em 0.34em;
+}
+
+.cl-no-results {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.93rem;
+    padding: 2.5rem 1rem;
+}
+
+/* ===== Breadcrumb ===== */
+.cl-breadcrumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 1.1rem;
+}
+
+.cl-breadcrumb a {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.cl-breadcrumb a:hover {
+    color: var(--accent);
+}
+
+/* ===== Detail page ===== */
+.cl-detail-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.4rem;
+}
+
+.cl-detail-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    min-width: 0;
+}
+
+.cl-detail-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    margin-bottom: 0.15rem;
+}
+
+.cl-detail-title {
+    font-family: var(--font-serif);
+    font-size: 1.85rem;
+    font-weight: 500;
+    line-height: 1.22;
+    letter-spacing: -0.02em;
+}
+
+.cl-detail-badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.cl-detail-art {
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--card-header-bg);
+    margin-bottom: 1.5rem;
+}
+
+.cl-detail-art .card-art-img,
+.cl-detail-art .card-art-svg {
+    display: block;
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    object-position: top center;
+}
+
+.cl-detail-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.cl-detail-summary {
+    font-size: 1.04rem;
+    line-height: 1.65;
+    color: var(--text-secondary);
+}
+
+.cl-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
+}
+
+.cl-source-note {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--card-border);
+    padding-top: 0.9rem;
+}
+
+/* ===== Blog post ===== */
+.post-head {
+    margin-bottom: 1.5rem;
+}
+
+.post-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.post-title {
+    font-family: var(--font-serif);
+    font-size: 2.1rem;
+    font-weight: 500;
+    line-height: 1.18;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.6rem;
+}
+
+.post-desc {
+    font-size: 1.06rem;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    max-width: 62ch;
+    margin-bottom: 0.8rem;
+}
+
+.post-cover {
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.post-cover img {
+    display: block;
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+}
+
+.post-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 860px) {
+    .cl-row {
+        grid-template-columns: 1fr;
+    }
+
+    .cl-row .cl-row-media {
+        border-right: 0;
+        border-bottom: 1px solid var(--card-border);
+    }
+
+    .cl-row-media .card-art-img,
+    .cl-row-media .card-art-svg {
+        min-height: 0;
+        max-height: 260px;
+        aspect-ratio: 16 / 9;
+    }
+}
+
+@media (max-width: 640px) {
+    /* Two selects per line, sort on its own, count last - still far shorter
+       than a wrapped chip list. */
+    .cl-field {
+        flex: 1 1 calc(50% - 0.25rem);
+    }
+
+    .cl-select {
+        width: 100%;
+    }
+
+    .cl-count {
+        flex: 1 1 100%;
+        margin-left: 0;
+    }
+
+    .cl-row-body {
+        padding: 1.2rem 1.15rem;
+    }
+
+    .cl-row-title {
+        font-size: 1.18rem;
+    }
+
+    .cl-detail-title {
+        font-size: 1.5rem;
+    }
+
+    .post-title {
+        font-size: 1.7rem;
+    }
+
+    .cl-row-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cl-row-links {
+        margin-left: 0;
+    }
+}
