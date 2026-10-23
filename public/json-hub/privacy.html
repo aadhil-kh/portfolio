@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fafafa">
+    <meta name="description" content="Privacy policy for JSON Hub on Windows: local JSON processing, JSON Schema and URL downloads, local storage, and no accounts, ads, or analytics.">
+    <meta name="referrer" content="no-referrer">
+    <title>JSON Hub Privacy Policy | Mohammed Aadhil</title>
+    <link rel="icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../privacy.css">
+</head>
+<body>
+    <header class="policy-nav">
+        <a href="../index.html">&larr; Mohammed Aadhil&rsquo;s portfolio</a>
+    </header>
+    <main>
+        <p class="eyebrow">JSON Hub</p>
+        <h1>Privacy Policy</h1>
+        <p class="updated">Last updated: <time datetime="2026-10-24">24 October 2026</time></p>
+        <p>This policy explains how JSON Hub, developed by Mohammed Aadhil, handles information when you use the app on Windows.</p>
+        <aside class="summary" aria-label="Privacy summary">
+            <p>JSON Hub formats, validates, converts, and views your JSON on your PC. The text you work on is never sent to the developer or to any server. The app connects to the internet only to download what you or your document point it to: JSON from a URL you enter, and JSON Schemas your document declares or matches. There is no account, advertising, analytics, or tracking.</p>
+        </aside>
+        <nav class="contents" aria-label="Policy contents">
+            <h2>Contents</h2>
+            <ol>
+                <li><a href="#processing">Local processing</a></li>
+                <li><a href="#storage">Data stored on your PC</a></li>
+                <li><a href="#clipboard">Clipboard</a></li>
+                <li><a href="#network">Internet connections</a></li>
+                <li><a href="#previews">Previews, saving, and sharing</a></li>
+                <li><a href="#accounts">Accounts, purchases, and tracking</a></li>
+                <li><a href="#store">Microsoft Store and Windows</a></li>
+                <li><a href="#deletion">Retention and deletion</a></li>
+                <li><a href="#support">Support and privacy requests</a></li>
+                <li><a href="#children">Children&rsquo;s privacy</a></li>
+                <li><a href="#changes">Changes to this policy</a></li>
+            </ol>
+        </nav>
+        <section id="processing" aria-labelledby="processing-heading">
+            <h2 id="processing-heading">Local processing</h2>
+            <p>Everything you open, paste, or type into JSON Hub is processed on your PC. Formatting, validation, JSON Schema checks, conversion to other formats, Table View, Tree View, and code generation run inside the app, without a server.</p>
+            <p>The developer does not receive your documents, their content, file names, or information about how you use the app. This holds even when your content contains personal or sensitive information.</p>
+            <p>The editor, Table View, and Tree View are displayed with Microsoft Edge WebView2, a component of Windows. Their pages are bundled with the app and loaded from your PC.</p>
+        </section>
+        <section id="storage" aria-labelledby="storage-heading">
+            <h2 id="storage-heading">Data stored on your PC</h2>
+            <p>JSON Hub keeps the following in its app data folder on your PC:</p>
+            <ul>
+                <li>Your settings, such as theme, editor options, default action, and layout</li>
+                <li>Schema choices you make for a document, which can include that document&rsquo;s file path, so the same schema is used next time</li>
+                <li>A list of recently used schemas</li>
+                <li>Downloaded JSON Schemas and their download dates, kept in a size-limited cache</li>
+                <li>A downloaded copy of the SchemaStore catalog, if you refresh it</li>
+                <li>Temporary files created when you share a result as a file</li>
+            </ul>
+            <p>Files you open stay where they are, and files you save go to the location you choose. None of this data is sent to the developer.</p>
+        </section>
+        <section id="clipboard" aria-labelledby="clipboard-heading">
+            <h2 id="clipboard-heading">Clipboard</h2>
+            <p>By default, when JSON Hub starts it reads the text on your clipboard and, if it is valid input, places it in the editor. You can turn this off in Settings &rarr; Auto paste clipboard on startup. The app also reads the clipboard when you choose Paste, and writes to it when you choose Copy. Clipboard content is used only inside the app.</p>
+        </section>
+        <section id="network" aria-labelledby="network-heading">
+            <h2 id="network-heading">Internet connections</h2>
+            <p>JSON Hub makes a network request only in these cases:</p>
+            <ul>
+                <li><strong>Load from URL.</strong> When you enter a URL, the app downloads the content at that address.</li>
+                <li><strong>Schemas your document declares.</strong> If a JSON document contains a <code>$schema</code> address, the app downloads that schema to validate the document.</li>
+                <li><strong>Schemas matched from the catalog.</strong> If a file&rsquo;s name matches an entry in the bundled SchemaStore catalog, such as <code>package.json</code>, the app downloads the matching schema. This is on by default; turn it off in Settings &rarr; Attach matching schemas automatically, or for one document with Detach schema or Don&rsquo;t suggest for this input in the schema menu.</li>
+                <li><strong>Schemas you add.</strong> When you attach a schema from a URL, the app downloads it.</li>
+                <li><strong>Cache checks.</strong> After a downloaded schema&rsquo;s cache period ends, the app asks the server whether it has changed before using it again.</li>
+                <li><strong>Catalog refresh.</strong> When you choose to refresh the schema catalog in Settings, the app downloads the latest catalog from schemastore.org.</li>
+            </ul>
+            <p>These requests ask only for the file at the given address. They never include the content of your documents. Like any web request, they show the server your IP address and standard request details such as the app&rsquo;s user agent. The sites you download from, including schemastore.org and the hosts its schemas point to, handle that information under their own privacy policies. SchemaStore is an independent open-source project and is not affiliated with JSON Hub.</p>
+            <p>Without an internet connection, everything except these downloads keeps working, and previously downloaded schemas are used from the cache.</p>
+        </section>
+        <section id="previews" aria-labelledby="previews-heading">
+            <h2 id="previews-heading">Previews, saving, and sharing</h2>
+            <p>HTML and Markdown output can be previewed in a separate window. The preview displays the generated output on your PC and does not follow links. If your data contains addresses of images or other resources, the preview may load them from those addresses.</p>
+            <p>When you save, copy, or share a result through the Windows share window, the destination you choose receives that content and handles it under its own terms. Links in the app, such as the bug report page, open in your web browser.</p>
+        </section>
+        <section id="accounts" aria-labelledby="accounts-heading">
+            <h2 id="accounts-heading">Accounts, purchases, and tracking</h2>
+            <p>JSON Hub has no account or sign-in, and there is no account data to delete. It contains no in-app purchases or license keys. It does not include advertising, analytics, crash reporting, or tracking SDKs, and it does not sell or share personal information.</p>
+        </section>
+        <section id="store" aria-labelledby="store-heading">
+            <h2 id="store-heading">Microsoft Store and Windows</h2>
+            <p>JSON Hub is distributed through the Microsoft Store, which handles downloads, installs, updates, and reviews under <a href="https://privacy.microsoft.com/privacystatement">Microsoft&rsquo;s privacy statement</a>. The developer receives aggregate reports from the Store, such as install counts by country, version, or Windows version, and crash and hang reports collected by Windows according to your diagnostic data settings. These reports do not identify you to the developer.</p>
+        </section>
+        <section id="deletion" aria-labelledby="deletion-heading">
+            <h2 id="deletion-heading">Retention and deletion</h2>
+            <p>The developer does not hold copies of anything you process in JSON Hub. Data stored by the app stays on your PC until you remove it:</p>
+            <ul>
+                <li>Clear downloaded schemas in Settings with Clear cache.</li>
+                <li>Restore default settings in Settings with Reset settings.</li>
+                <li>Uninstalling JSON Hub removes its app data folder, including settings, schema choices, and the schema cache.</li>
+            </ul>
+            <p>Files you saved, shared, or copied elsewhere are not removed by uninstalling. Delete them separately, including any copies in cloud storage or backups.</p>
+        </section>
+        <section id="support" aria-labelledby="support-heading">
+            <h2 id="support-heading">Support and privacy requests</h2>
+            <p>If you contact Mohammed Aadhil at <a href="mailto:me@aadhil.dev">me@aadhil.dev</a>, your email address, message, and any attachments are used to respond to your request. Email providers process that correspondence to deliver and store it. It is kept as long as needed to handle your request and any related legal obligations, and you can ask for it to be deleted. If you report a bug on GitHub, GitHub&rsquo;s own privacy statement applies to what you post there.</p>
+            <p>Please do not send passwords, API keys, tokens, or confidential documents in a support request; a small sample with made-up values is enough to reproduce most problems. Depending on where you live, you may have rights to access, correct, or delete personal information held about you. Contact the same address to exercise them.</p>
+        </section>
+        <section id="children" aria-labelledby="children-heading">
+            <h2 id="children-heading">Children&rsquo;s privacy</h2>
+            <p>JSON Hub is a general-purpose developer utility and is not directed at children. The developer does not knowingly collect personal information from children. If you believe a child has supplied personal information in a support request, contact <a href="mailto:me@aadhil.dev">me@aadhil.dev</a> to have it removed.</p>
+        </section>
+        <section id="changes" aria-labelledby="changes-heading">
+            <h2 id="changes-heading">Changes to this policy</h2>
+            <p>This policy may be updated when the app or its data practices change. The latest version will be available at this address with a revised date.</p>
+        </section>
+    </main>
+    <footer>
+        <p>App privacy policies</p>
+        <nav aria-label="App privacy policies">
+            <a href="../solipdf/privacy.html">SoliPDF</a>
+            <a href="../webdevtools/privacy.html">webdevtools</a>
+            <a href="../qr-code-generator-pro/privacy.html">QR Code Generator Pro</a>
+            <a href="../webrendie/privacy.html">WebRendie</a>
+            <a href="../bargen/privacy.html">Bargen</a>
+            <a href="../json-safari/privacy.html">JSON Safari</a>
+            <a href="../json_tools/privacy.html">JSON Tools</a>
+            <a href="../json-hub/privacy.html" aria-current="page">JSON Hub</a>
+            <a href="../xml-hub/privacy.html">XML Hub</a>
+            <a href="../yaml-hub/privacy.html">YAML Hub</a>
+        </nav>
+        <p>&copy; 2026 Mohammed Aadhil &middot; <a href="mailto:me@aadhil.dev">me@aadhil.dev</a></p>
+    </footer>
+</body>
+</html>
